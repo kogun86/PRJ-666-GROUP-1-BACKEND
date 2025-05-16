@@ -1,6 +1,8 @@
 import pino from 'pino';
 
-const options = { level: process.env.LOG_LEVEL || 'info' };
+import config from '../config.js';
+
+const options = { level: config.LOG_LEVEL };
 
 if (options.level === 'debug') {
   options.transport = {

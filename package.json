@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \"./src/**/*.js\""
+    "lint": "eslint \"./src/**/*.js\"",
+    "start": "cross-env DOTENV_CONFIG_PATH=.env.production node --require dotenv/config ./src/server.js",
+    "dev": "cross-env DOTENV_CONFIG_PATH=.env.development nodemon --require dotenv/config ./src/server.js --watch src",
+    "debug": "cross-env DOTENV_CONFIG_PATH=.env.development nodemon --inspect=0.0.0.0:9229 --require dotenv/config ./src/server.js --watch src"
   },
   "repository": {
     "type": "git",
@@ -51,11 +54,18 @@
     "@eslint/markdown": "^6.4.0",
     "eslint": "^9.26.0",
     "globals": "^16.1.0",
+    "nodemon": "^3.1.10",
     "prettier": "3.5.3"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "pino": "^9.6.0",
     "pino-http": "^10.4.0",
-    "pino-pretty": "^13.0.0"
+    "pino-pretty": "^13.0.0",
+    "stoppable": "^1.1.0"
   }
 }
