@@ -1,0 +1,3 @@
+# Ignore package config files
+package.json
+package-lock.json

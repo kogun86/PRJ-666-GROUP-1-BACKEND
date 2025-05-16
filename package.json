@@ -41,5 +41,8 @@
   "bugs": {
     "url": "https://github.com/kogun86/PRJ-666-GROUP-1-BACKEND/issues"
   },
-  "homepage": "https://github.com/kogun86/PRJ-666-GROUP-1-BACKEND#readme"
+  "homepage": "https://github.com/kogun86/PRJ-666-GROUP-1-BACKEND#readme",
+  "devDependencies": {
+    "prettier": "3.5.3"
+  }
 }
