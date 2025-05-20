@@ -26,6 +26,16 @@ export const strategy = () =>
   // in the Authorization header, then verify that with our Cognito JWT Verifier.
   new BearerStrategy(async (token, done) => {
     try {
+      // Allow mock token in dev
+      if (process.env.NODE_ENV === 'development' && token === 'mock-id-token'){
+        logger.info('Accepted mock token in development');
+        return done(null, {
+          email: 'dev@mock.local',
+          username: 'dev',
+          name: 'Development User',
+        });
+      }
+
       // Verify this JWT
       const user = await jwtVerifier.verify(token);
       logger.debug({ user }, 'verified user token');
