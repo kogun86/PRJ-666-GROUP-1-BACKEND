@@ -17,6 +17,7 @@ const app = express();
 app.use(cors());
 app.use(helmet());
 app.use(pino({ logger }));
+app.use(express.json());
 
 // Initializing Passport
 passport.use(strategy());
