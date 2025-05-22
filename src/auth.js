@@ -40,8 +40,7 @@ export const strategy = () =>
       const user = await jwtVerifier.verify(token);
       logger.debug({ user }, 'verified user token');
 
-      // Create a user, but only bother with their email.
-      done(null, user.email);
+      done(null, user);
     } catch (err) {
       logger.error({ err, token }, 'could not verify token');
       done(null, false);
