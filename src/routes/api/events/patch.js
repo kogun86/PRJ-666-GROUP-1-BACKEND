@@ -1,8 +1,9 @@
 import Event from "../../../models/Event.js";
+import { ZodError } from "zod";
 import { createErrorResponse, createSuccessResponse } from "../../../utils/response.js";
 import { patchGradeCompletedSchema } from "../../../utils/schemaValidation.js";
 
-
+// api/v1/events/:id/grade/completed
 export async function patchCompletedEventHandler(req,res){
   try{
     const { id } = req.params;
@@ -12,10 +13,16 @@ export async function patchCompletedEventHandler(req,res){
     const updatedEvent = await Event.findByIdAndUpdate(id, {isCompleted: true}, {new: true});
     res.status(200).json(createSuccessResponse({event: updatedEvent}));
   } catch(err){
-    res.status(401).json(createErrorResponse(401, err.message));
+    if (err instanceof ZodError){
+      const message = err.errors.map(e => e.message).join(', ');
+      res.status(400).json(createErrorResponse(400, message));
+      }
+    else{
+      res.status(401).json(createErrorResponse(401, err.message));
+    }
   }  
 }
-
+// api/v1/events/:id/grade
 export async function patchGradeCompletedEventHandler(req,res){
   try{
     const { id } = req.params;
@@ -29,6 +36,12 @@ export async function patchGradeCompletedEventHandler(req,res){
     const updatedEvent = await Event.findByIdAndUpdate(id, {grade}, {new: true});
     res.status(200).json(createSuccessResponse({event: updatedEvent}));
   } catch(err){
-    res.status(401).json(createErrorResponse(401, err.message));
+    if (err instanceof ZodError){
+      const message = err.errors.map(e => e.message).join(', ');
+      res.status(400).json(createErrorResponse(400, message));
+    }
+    else{
+      res.status(401).json(createErrorResponse(401, err.message));
+    }
   }  
 }
