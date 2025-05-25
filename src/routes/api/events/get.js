@@ -1,5 +1,6 @@
 import { createErrorResponse, createSuccessResponse } from "../../../utils/response.js";
 import Event from "../../../models/Event.js";
+import logger from "../../../utils/logger.js";
 // Just a basic implementation to get it running
 
 // Local Testing
@@ -19,8 +20,10 @@ export async function getUpcomingEventsHandler(req, res) {
   try{
     const owner = req.user.email;
     let events = await Event.find({ isCompleted: false, ownerEmail: owner });
+    logger.info("Upcoming Events Retrieved Successfully");
     res.status(200).json(createSuccessResponse({events: events || []}));
   } catch(err){
+    logger.error("Unable to retrieve upcoming events: ", err.message);
     res.status(401).json(createErrorResponse(401, err.message));
   }   
 }
@@ -32,8 +35,10 @@ try{
     if (!events || events.length === 0) {
       events = [];
     }
+    logger.info("Completed Events Retrieved Successfully");
     res.status(200).json(createSuccessResponse({ events }));
   } catch(err){
+    logger.error("Unable to retrieve Completed Events: ", err.message);
     res.status(401).json(createErrorResponse(401, err.message));
   }   
 }

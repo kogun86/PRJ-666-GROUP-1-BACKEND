@@ -2,6 +2,7 @@ import Event from "../../../models/Event.js";
 import { ZodError } from "zod";
 import { createErrorResponse, createSuccessResponse } from "../../../utils/response.js";
 import { patchGradeCompletedSchema } from "../../../utils/schemaValidation.js";
+import logger from "../../../utils/logger.js";
 
 // api/v1/events/:id/grade/completed
 export async function patchCompletedEventHandler(req,res){
@@ -11,13 +12,16 @@ export async function patchCompletedEventHandler(req,res){
     if(!event)
       throw new Error("Event Not Found");
     const updatedEvent = await Event.findByIdAndUpdate(id, {isCompleted: true}, {new: true});
+    logger.info("Event is now completed.");
     res.status(200).json(createSuccessResponse({event: updatedEvent}));
   } catch(err){
     if (err instanceof ZodError){
       const message = err.errors.map(e => e.message).join(', ');
+      logger.error("Event was unable to be completed: ", message);
       res.status(400).json(createErrorResponse(400, message));
       }
     else{
+      logger.error("Event was unable to be completed: ", err.message);
       res.status(401).json(createErrorResponse(401, err.message));
     }
   }  
@@ -34,13 +38,16 @@ export async function patchGradeCompletedEventHandler(req,res){
     if(event.isCompleted == false)
       throw new Error("Event is not completed");
     const updatedEvent = await Event.findByIdAndUpdate(id, {grade}, {new: true});
+    logger.info("Updated Event Grade Successfully");
     res.status(200).json(createSuccessResponse({event: updatedEvent}));
   } catch(err){
     if (err instanceof ZodError){
       const message = err.errors.map(e => e.message).join(', ');
+      logger.error("Error Updating Event Grade: ", message);
       res.status(400).json(createErrorResponse(400, message));
     }
     else{
+      logger.error("Error Updating Event Grade: ", err.message);
       res.status(401).json(createErrorResponse(401, err.message));
     }
   }  
