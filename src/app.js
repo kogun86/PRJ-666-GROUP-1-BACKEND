@@ -8,6 +8,7 @@ import logger from './utils/logger.js';
 import routes from './routes/index.js';
 import courseRoutes from './routes/courses/index.js';
 import userRoutes from './routes/users/index.js';
+import classRoutes from './routes/classes/index.js';
 
 // Set up Express app
 const app = express();
@@ -26,5 +27,6 @@ app.use((req, res, next) => {
 app.use('/api', routes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/classes', classRoutes);
 
 export default app;
