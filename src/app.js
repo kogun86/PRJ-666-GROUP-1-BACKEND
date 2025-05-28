@@ -10,6 +10,9 @@ import courseRoutes from './routes/courses/index.js';
 import userRoutes from './routes/users/index.js';
 import classRoutes from './routes/classes/index.js';
 
+import passport from 'passport';
+import { strategy } from './auth.js';
+
 // Set up Express app
 const app = express();
 
@@ -22,6 +25,10 @@ app.use((req, res, next) => {
   req.log.info({ req, body: req.body }, 'Request received');
   next();
 });
+
+// Initializing Passport
+passport.use(strategy());
+app.use(passport.initialize());
 
 // Mount routes
 app.use('/api', routes);
