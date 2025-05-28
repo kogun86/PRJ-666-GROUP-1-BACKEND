@@ -8,17 +8,9 @@ const Instructor = z.object({
   availableTimeSlots: z
     .array(
       z.object({
-        dayOfWeek: z.enum([
-          'monday',
-          'tuesday',
-          'wednesday',
-          'thursday',
-          'friday',
-          'saturday',
-          'sunday',
-        ]),
-        startTime: z.iso.time(),
-        endTime: z.iso.time(),
+        weekday: z.number().min(0).max(6), // 0 = Sunday, 6 = Saturday
+        startTime: z.number().min(0).max(85399), // 23:59:59 in seconds
+        endTime: z.number().min(0).max(85399), // 23:59:59 in seconds
       })
     )
     .optional(),
@@ -26,9 +18,9 @@ const Instructor = z.object({
 
 const ClassSession = z.object({
   classType: z.enum(['lecture', 'lab']),
-  dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']),
-  startTime: z.iso.time(),
-  endTime: z.iso.time(),
+  weekday: z.number().min(0).max(6), // 0 = Sunday, 6 = Saturday
+  startTime: z.number().min(0).max(85399), // 23:59:59 in seconds
+  endTime: z.number().min(0).max(85399), // 23:59:59 in seconds
   location: z.string().max(20).optional(),
 });
 
@@ -41,7 +33,7 @@ const Course = z.object({
   startDate: z.iso.date(),
   endDate: z.iso.date(),
   instructor: Instructor,
-  classSessions: z.array(ClassSession).min(1),
+  schedule: z.array(ClassSession).min(1),
 });
 
 export default function validateCourse(data) {

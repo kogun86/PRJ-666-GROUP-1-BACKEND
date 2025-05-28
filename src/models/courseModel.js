@@ -44,41 +44,39 @@ const courseSchema = new mongoose.Schema({
     availableTimeSlots: {
       type: [
         {
-          dayOfWeek: {
-            type: String,
+          weekday: {
+            type: Number,
             required: true,
-            enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
           },
           startTime: {
-            type: String,
+            type: Number,
             required: true,
           },
           endTime: {
-            type: String,
+            type: Number,
             required: true,
           },
         },
       ],
     },
   },
-  classSessions: [
+  schedule: [
     {
       classType: {
         type: String,
         required: true,
         enum: ['lecture', 'lab'],
       },
-      dayOfWeek: {
-        type: String,
+      weekday: {
+        type: Number,
         required: true,
-        enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
       },
       startTime: {
-        type: String,
+        type: Number,
         required: true,
       },
       endTime: {
-        type: String,
+        type: Number,
         required: true,
       },
       location: {
