@@ -8,6 +8,7 @@ import logger from './utils/logger.js';
 import authenticate from './utils/auth.js';
 import { strategy } from './utils/auth.js';
 
+import mainRouter from './routes/index.js';
 import courseRoutes from './routes/courses/index.js';
 import userRoutes from './routes/users/index.js';
 import classRoutes from './routes/classes/index.js';
@@ -31,7 +32,7 @@ passport.use(strategy);
 app.use(passport.initialize());
 
 // Mount routes
-// app.use('/api/v1', routes);
+app.use('/', mainRouter);
 app.use('/api/v1/courses', authenticate, courseRoutes);
 app.use('/api/v1/users', authenticate, userRoutes);
 app.use('/api/v1/classes', authenticate, classRoutes);
