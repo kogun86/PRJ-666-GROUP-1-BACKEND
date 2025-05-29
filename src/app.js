@@ -11,6 +11,7 @@ import { strategy } from './utils/auth.js';
 import courseRoutes from './routes/courses/index.js';
 import userRoutes from './routes/users/index.js';
 import classRoutes from './routes/classes/index.js';
+import eventRoutes from './routes/events/index.js';
 
 // Set up Express app
 const app = express();
@@ -34,5 +35,6 @@ app.use(passport.initialize());
 app.use('/api/v1/courses', authenticate, courseRoutes);
 app.use('/api/v1/users', authenticate, userRoutes);
 app.use('/api/v1/classes', authenticate, classRoutes);
+app.use('/api/v1/events', authenticate, eventRoutes);
 
 export default app;
