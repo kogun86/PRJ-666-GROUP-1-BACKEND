@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import config from '../../../config.js';
+import config from '../../config.js';
 
 // Debug function to safely log objects
 function safeLog(label, obj) {
@@ -11,7 +11,7 @@ function safeLog(label, obj) {
   }
 }
 
-export async function postChatMessageHandler(req, res) {
+export default async function postChatMessageHandler(req, res) {
   console.log('========== CHAT DEBUG ==========');
   console.log('Chat endpoint hit');
   safeLog('Config object', config);

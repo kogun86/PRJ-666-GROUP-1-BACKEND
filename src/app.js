@@ -13,6 +13,7 @@ import courseRoutes from './routes/courses/index.js';
 import userRoutes from './routes/users/index.js';
 import classRoutes from './routes/classes/index.js';
 import eventRoutes from './routes/events/index.js';
+import chatRoutes from './routes/chat/index.js';
 
 // Set up Express app
 const app = express();
@@ -37,5 +38,6 @@ app.use('/api/v1/courses', authenticate, courseRoutes);
 app.use('/api/v1/users', authenticate, userRoutes);
 app.use('/api/v1/classes', authenticate, classRoutes);
 app.use('/api/v1/events', authenticate, eventRoutes);
+app.use('/api/v1/chat', authenticate, chatRoutes);
 
 export default app;
