@@ -25,7 +25,7 @@ const ClassSession = z.object({
 });
 
 const Course = z.object({
-  userId: z.string().max(30),
+  userId: z.string(),
   title: z.string().max(30),
   code: z.string().max(10),
   section: z.string().max(10).optional(),

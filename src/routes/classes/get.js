@@ -1,9 +1,8 @@
 import { getClasses } from '../../controllers/classController.js';
 
-// TODO: Secure this route with authentication middleware
 export default (router) => {
   router.get('/', async (req, res) => {
-    const userId = '1234'; // TODO: Get user ID from authentication token
+    const userId = req.user.userId;
 
     const { success, status, errors, classes } = await getClasses(userId);
 
