@@ -25,8 +25,8 @@ export const strategy = new BearerStrategy(async (token, done) => {
     if (process.env.NODE_ENV === 'development' && token === 'mock-id-token') {
       logger.info('Accepted mock token in development');
       return done(null, {
+        userId: 'dev',
         email: 'dev@mock.local',
-        username: 'dev',
         name: 'Development User',
       });
     }
