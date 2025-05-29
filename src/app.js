@@ -2,16 +2,15 @@ import cors from 'cors';
 import helmet from 'helmet';
 import pino from 'pino-http';
 import express from 'express';
+import passport from 'passport';
 
 import logger from './utils/logger.js';
+import authenticate from './utils/auth.js';
+import { strategy } from './utils/auth.js';
 
-import routes from './routes/index.js';
 import courseRoutes from './routes/courses/index.js';
 import userRoutes from './routes/users/index.js';
 import classRoutes from './routes/classes/index.js';
-
-import passport from 'passport';
-import { strategy } from './auth.js';
 
 // Set up Express app
 const app = express();
@@ -27,13 +26,13 @@ app.use((req, res, next) => {
 });
 
 // Initializing Passport
-passport.use(strategy());
+passport.use(strategy);
 app.use(passport.initialize());
 
 // Mount routes
-app.use('/api', routes);
-app.use('/api/courses', courseRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/classes', classRoutes);
+// app.use('/api/v1', routes);
+app.use('/api/v1/courses', authenticate, courseRoutes);
+app.use('/api/v1/users', authenticate, userRoutes);
+app.use('/api/v1/classes', authenticate, classRoutes);
 
 export default app;

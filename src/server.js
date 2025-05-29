@@ -4,11 +4,13 @@ import app from './app.js';
 import config from './config.js';
 import logger from './utils/logger.js';
 import { connectDB } from './utils/dbConnection.js';
+import { hydrateCognitoJwks } from './utils/auth.js';
 
 let server = null;
 
 // Start server
 connectDB()
+  .then(hydrateCognitoJwks)
   .finally(() => {
     server = stoppable(
       app.listen(config.PORT, () => {
