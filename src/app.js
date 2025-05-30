@@ -4,16 +4,16 @@ import pino from 'pino-http';
 import express from 'express';
 import passport from 'passport';
 
-import logger from './utils/logger.js';
-import authenticate from './utils/auth.js';
-import { strategy } from './utils/auth.js';
+import authenticate from './core/auth.js';
+import { strategy } from './core/auth.js';
+import logger from './shared/utils/logger.js';
 
-import mainRouter from './routes/index.js';
-import courseRoutes from './routes/courses/index.js';
-import userRoutes from './routes/users/index.js';
-import classRoutes from './routes/classes/index.js';
-import eventRoutes from './routes/events/index.js';
-import chatRoutes from './routes/chat/index.js';
+import mainRouter from './features/health/routes/index.js';
+import courseRoutes from './features/courses/routes/index.js';
+import userRoutes from './features/users/routes/index.js';
+import classRoutes from './features/classes/routes/index.js';
+import eventRoutes from './features/events/routes/index.js';
+import chatRoutes from './features/chat/routes/index.js';
 
 // Set up Express app
 const app = express();
