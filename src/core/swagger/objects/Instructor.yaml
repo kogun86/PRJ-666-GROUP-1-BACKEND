@@ -1,0 +1,45 @@
+components:
+  schemas:
+    Instructor:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          description: Instructor's full display name
+          minLength: 1
+          maxLength: 30
+        email:
+          type: string
+          description: Instructor's contact email address
+          minLength: 1
+          maxLength: 50
+          pattern: ^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$
+          example: email@example.com
+        availableTimeSlots:
+          type: array
+          items:
+            type: object
+            required:
+              - weekday
+              - startTime
+              - endTime
+            properties:
+              weekday:
+                type: number
+                description: Day of the week (0 - Sunday, 6 - Saturday)
+                format: integer
+                minimum: 0
+                maximum: 6
+              startTime:
+                type: number
+                description: Time at which availability starts (Number of seconds since midnight)
+                minimum: 0
+                maximum: 85399
+              endTime:
+                type: number
+                description: Time at which availability ends (Number of seconds since midnight)
+                minimum: 0
+                maximum: 85399

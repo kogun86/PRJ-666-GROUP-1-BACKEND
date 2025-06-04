@@ -1,0 +1,63 @@
+components:
+  schemas:
+    Event:
+      type: object
+      required:
+        - _id
+        - userId
+        - title
+        - courseCode
+        - weight
+        - dueDate
+        - type
+        - isCompleted
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the event
+          minLength: 24
+          maxLength: 24
+          example: 60c72b2f9b1e8d001c8e4f3a
+        userId:
+          type: string
+          description: Links event to specific user
+          minLength: 1
+        title:
+          type: string
+          description: Title of the event
+          minLength: 1
+          maxLength: 30
+        courseCode:
+          type: sting
+          description: Links event to specific course (Will be replaced with course ID)
+          minLength: 1
+        weight:
+          type: number
+          description: Weight of the event in percentage
+          format: integer
+          minimum: 0
+          maximum: 100
+        dueDate:
+          type: sting
+          description: Due date of the event
+          format: date-time
+        type:
+          type: string
+          description: Type of the event
+          enum:
+            - assignment
+            - exam
+            - project
+            - quiz
+            - test
+            - homework
+        isCompleted:
+          type: boolean
+          description: Indicates if the event is completed
+          default: false
+        grade:
+          type: number
+          description: Grade received for the event
+          format: float
+          minimum: 0
+          maximum: 100

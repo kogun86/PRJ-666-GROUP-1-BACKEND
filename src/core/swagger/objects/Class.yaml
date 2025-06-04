@@ -1,0 +1,55 @@
+components:
+  schemas:
+    Class:
+      type: object
+      required:
+        - _id
+        - userId
+        - courseId
+        - classType
+        - startTime
+        - endTime
+        - events
+        - topics
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the class
+          minLength: 24
+          maxLength: 24
+          example: 60c72b2f9b1e8d001c8e4f3a
+        userId:
+          type: string
+          description: Links class to specific user
+          minLength: 1
+        courseId:
+          type: string
+          description: Links class to specific course
+          minLength: 1
+        classType:
+          type: string
+          description: Specifies type of class session
+          enum:
+            - lecture
+            - lab
+        startTime:
+          type: string
+          description: Start time of the class session
+          format: date-time
+        endTime:
+          type: string
+          description: End time of the class session
+          format: date-time
+        events:
+          type: array
+          description: List of related event IDs
+          items:
+            type: string
+            minLength: 1
+        topics:
+          type: array
+          description: Covered topics for the session
+          items:
+            type: string
+            minLength: 1
+            maxLength: 30

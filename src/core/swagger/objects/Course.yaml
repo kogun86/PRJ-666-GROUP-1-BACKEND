@@ -1,0 +1,63 @@
+components:
+  schemas:
+    Course:
+      type: object
+      required:
+        - _id
+        - userId
+        - title
+        - code
+        - status
+        - startDate
+        - endDate
+        - instructor
+        - schedule
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the course
+          minLength: 24
+          maxLength: 24
+          example: 60c72b2f9b1e8d001c8e4f3a
+        userId:
+          type: string
+          minLength: 1
+          description: Links course to specific user
+        title:
+          type: string
+          description: Full name of the course
+          minLength: 1
+          maxLength: 30
+        code:
+          type: string
+          description: Official course code identifier
+          minLength: 1
+          maxLength: 10
+        section:
+          type: string
+          description: Specific section of course
+          minLength: 1
+          maxLength: 10
+        status:
+          type: string
+          description: Indicates course activity status
+          enum:
+            - active
+            - inactive
+        startDate:
+          type: string
+          description: Course start calendar date
+          format: date
+        endDate:
+          type: string
+          description: Course end calendar date
+          format: date
+        instructor:
+          type: object
+          description: Contains information about the course instructor
+          $ref: '#/components/schemas/Instructor'
+        schedule:
+          type: array
+          description: Array of class session objects
+          minItems: 1
+          $ref: '#/components/schemas/ScheduleRecord'
