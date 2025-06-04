@@ -1,0 +1,35 @@
+components:
+  schemas:
+    ScheduleRecord:
+      type: object
+      required:
+        - classType
+        - weekday
+        - startTime
+        - endTime
+      properties:
+        classType:
+          type: string
+          description: Type of scheduled class session
+          enum:
+            - lecture
+            - lab
+        weekday:
+          type: number
+          description: Day of the week (0 - Sunday, 6 - Saturday)
+          format: integer
+          minimum: 0
+          maximum: 6
+        startTime:
+          type: number
+          description: Time at which class starts (Number of seconds since midnight)
+          minimum: 0
+          maximum: 85399
+        endTime:
+          type: number
+          description: Time at which class ends (Number of seconds since midnight)
+          minimum: 0
+          maximum: 85399
+        location:
+          type: string
+          description: Location where class occurs
