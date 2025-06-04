@@ -1,0 +1,22 @@
+components:
+  responses:
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+              - errors
+            properties:
+              success:
+                type: boolean
+                description: Indicates if the request was successful
+                default: false
+              errors:
+                type: array
+                description: List of error messages
+                items:
+                  type: string
+                  example: Internal server error

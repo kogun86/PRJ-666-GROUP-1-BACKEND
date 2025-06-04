@@ -1,0 +1,9 @@
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        text/plain:
+          schema:
+            type: sting
+            example: Unauthorized
