@@ -3,9 +3,11 @@ import helmet from 'helmet';
 import pino from 'pino-http';
 import express from 'express';
 import passport from 'passport';
+import swaggerUi from 'swagger-ui-express';
 
 import authenticate from './core/auth.js';
 import { strategy } from './core/auth.js';
+import swaggerSpec from './core/swagger/swagger.js';
 import logger from './shared/utils/logger.js';
 
 import mainRouter from './features/health/routes/index.js';
@@ -33,11 +35,14 @@ passport.use(strategy);
 app.use(passport.initialize());
 
 // Mount routes
-app.use('/', mainRouter);
+app.use('/api/v1/', mainRouter);
 app.use('/api/v1/courses', authenticate, courseRoutes);
 app.use('/api/v1/users', authenticate, userRoutes);
 app.use('/api/v1/classes', authenticate, classRoutes);
 app.use('/api/v1/events', authenticate, eventRoutes);
 app.use('/api/v1/chat', authenticate, chatRoutes);
+
+// Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
