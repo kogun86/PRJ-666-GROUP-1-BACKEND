@@ -4,17 +4,17 @@ import logger from '../../shared/utils/logger.js';
 import Event from '../../shared/models/event.model.js';
 
 async function getEvents(userId, isCompleted = false) {
-  logger.debug(`Fetching upcoming events for user ${userId}`);
+  logger.debug(`Fetching events for user ${userId} with isCompleted=${isCompleted}`);
 
   try {
     const events = await Event.find({ userId: userId, isCompleted: isCompleted });
 
-    logger.info(`Found ${events.length} upcoming events for user ${userId}`);
-    logger.debug({ events }, 'Upcoming events fetched from database');
+    logger.info(`Found ${events.length} events for user ${userId}`);
+    logger.debug({ events }, 'Events fetched from database');
 
     return { success: true, events: events };
   } catch (error) {
-    logger.error({ error }, `Error fetching upcoming events for user ${userId}: `);
+    logger.error({ error }, `Error fetching events for user ${userId}: `);
     return { success: false, status: 500, errors: ['Internal server error'] };
   }
 }
@@ -85,12 +85,11 @@ async function createEvent(userId, data) {
   try {
     const event = await Event.create(parsedData);
     logger.info({ event }, 'Event created successfully and saved to database');
+    return { success: true, event: event };
   } catch (error) {
     logger.error({ error }, 'Error creating event in database');
     return { success: false, status: 500, errors: ['Internal server error'] };
   }
-
-  return { success: true, event: parsedData };
 }
 
 export { getEvents, updateCompletionStatus, updateGrade, createEvent };

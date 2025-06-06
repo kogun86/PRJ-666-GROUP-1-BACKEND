@@ -4,12 +4,20 @@ import logger from '../../shared/utils/logger.js';
 
 const Event = z.object({
   userId: z.string(),
-  title: z.string().max(30),
-  courseCode: z.string().max(10),
+  title: z.string().max(100),
+  courseID: z.string(),
+  type: z.enum(['assignment', 'exam', 'project', 'quiz', 'test', 'homework']),
+  description: z.string().max(500).optional(),
   weight: z.number().min(0).max(100),
-  dueDate: z.iso.date(),
-  description: z.string().max(200),
-  type: z.string().max(20), // TODO: Consider using an enum for event types
+  grade: z.number().min(0).max(100).nullable().default(null),
+  isCompleted: z.boolean().default(false),
+  start: z.string().datetime().optional(),
+  end: z.string().datetime(),
+  location: z.string().max(100).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/)
+    .optional(),
 });
 
 export default function validateEvent(data) {
