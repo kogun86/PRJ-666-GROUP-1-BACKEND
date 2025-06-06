@@ -8,7 +8,14 @@ export default (router) => {
    *   tags:
    *    - Events
    *   summary: Get events for the authenticated user
-   *   description: Retrieve all events for the authenticated user with optional filters and expansions
+   *   description: |
+   *     Retrieve all events for the authenticated user with optional filters and expansions.
+   *
+   *     ### Example API calls:
+   *     - Get all events: `GET /api/events`
+   *     - Expand course details: `GET /api/events?expand=course`
+   *     - Filter by date range: `GET /api/events?from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
+   *     - Combine multiple filters: `GET /api/events?completed=true&expand=course&from=2023-09-01T00:00:00Z`
    *   security:
    *    - BearerAuth: []
    *   parameters:
@@ -173,8 +180,16 @@ export default (router) => {
    *  get:
    *   tags:
    *    - Events
-   *   summary: Get events for the authenticated user
-   *   description: Retrieve all events for the authenticated user, filtered by their completion status
+   *   summary: Get events for the authenticated user by status
+   *   description: |
+   *     Retrieve all events for the authenticated user, filtered by their completion status.
+   *
+   *     ### Example API calls:
+   *     - Get pending events: `GET /api/events/pending`
+   *     - Get completed events: `GET /api/events/completed`
+   *     - Get pending events with course details: `GET /api/events/pending?expand=course`
+   *     - Get pending events after a specific date: `GET /api/events/pending?from=2023-09-01T00:00:00Z`
+   *     - Combined filtering: `GET /api/events/completed?expand=course&from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
    *   security:
    *    - BearerAuth: []
    *   parameters:
