@@ -2,16 +2,47 @@ import validateEvent from './event.validator.js';
 import logger from '../../shared/utils/logger.js';
 
 import Event from '../../shared/models/event.model.js';
+import Course from '../../shared/models/course.model.js';
 
-async function getEvents(userId, isCompleted = false) {
-  logger.debug(`Fetching events for user ${userId} with isCompleted=${isCompleted}`);
+async function getEvents(userId, isCompleted = false, expandCourse = false) {
+  logger.debug(
+    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}`
+  );
 
   try {
     const events = await Event.find({ userId: userId, isCompleted: isCompleted });
 
     logger.info(`Found ${events.length} events for user ${userId}`);
-    logger.debug({ events }, 'Events fetched from database');
 
+    // If expandCourse is true, populate the course data for each event
+    if (expandCourse) {
+      logger.debug('Expanding course data for events');
+      const eventsWithCourses = [];
+
+      for (const event of events) {
+        try {
+          const course = await Course.findById(event.courseID);
+          if (course) {
+            // Create a new object with the event data and the course data
+            const eventObj = event.toObject();
+            eventObj.course = course.toObject();
+            eventsWithCourses.push(eventObj);
+          } else {
+            // If the course doesn't exist, just include the event without course data
+            logger.warn(`Course with ID ${event.courseID} not found for event ${event._id}`);
+            eventsWithCourses.push(event.toObject());
+          }
+        } catch (courseError) {
+          logger.error({ error: courseError }, `Error fetching course for event ${event._id}`);
+          eventsWithCourses.push(event.toObject());
+        }
+      }
+
+      logger.debug({ eventsWithCourses }, 'Events with expanded course data');
+      return { success: true, events: eventsWithCourses };
+    }
+
+    logger.debug({ events }, 'Events fetched from database');
     return { success: true, events: events };
   } catch (error) {
     logger.error({ error }, `Error fetching events for user ${userId}: `);
