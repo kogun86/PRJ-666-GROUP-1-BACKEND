@@ -4,13 +4,64 @@ import logger from '../../shared/utils/logger.js';
 import Event from '../../shared/models/event.model.js';
 import Course from '../../shared/models/course.model.js';
 
-async function getEvents(userId, isCompleted = false, expandCourse = false) {
+async function getEvents(
+  userId,
+  isCompleted = false,
+  expandCourse = false,
+  fromDate = null,
+  toDate = null
+) {
   logger.debug(
-    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}`
+    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}, fromDate=${fromDate}, toDate=${toDate}`
   );
 
   try {
-    const events = await Event.find({ userId: userId, isCompleted: isCompleted });
+    // Build the query with required filters
+    const query = { userId, isCompleted };
+
+    // Add date range filter if provided
+    if (fromDate || toDate) {
+      query.$or = [];
+
+      // Events with start and end dates that overlap with the range
+      const dateQuery = {};
+
+      if (fromDate) {
+        // Events that start after or on the fromDate
+        // OR events that end after or on the fromDate
+        dateQuery.$or = [
+          { start: { $gte: new Date(fromDate) } },
+          { end: { $gte: new Date(fromDate) } },
+        ];
+      }
+
+      if (toDate) {
+        // Events that start before or on the toDate
+        // OR events that end before or on the toDate
+        if (dateQuery.$or) {
+          // Add $and condition if we already have fromDate constraints
+          query.$and = [
+            { $or: dateQuery.$or },
+            { $or: [{ start: { $lte: new Date(toDate) } }, { end: { $lte: new Date(toDate) } }] },
+          ];
+          // Remove the $or we added earlier as it's now in $and
+          delete query.$or;
+        } else {
+          // If we only have toDate, just use $or
+          dateQuery.$or = [
+            { start: { $lte: new Date(toDate) } },
+            { end: { $lte: new Date(toDate) } },
+          ];
+          query.$or = dateQuery.$or;
+        }
+      } else if (dateQuery.$or) {
+        // If we only have fromDate constraints
+        query.$or = dateQuery.$or;
+      }
+    }
+
+    logger.debug({ query }, 'Database query for events');
+    const events = await Event.find(query);
 
     logger.info(`Found ${events.length} events for user ${userId}`);
 

@@ -28,6 +28,22 @@ export default (router) => {
    *       type: string
    *       enum: [course]
    *      example: course
+   *    - in: query
+   *      name: from
+   *      description: Filter events that start or end after this date (ISO format)
+   *      required: false
+   *      schema:
+   *       type: string
+   *       format: date-time
+   *      example: 2023-09-01T00:00:00Z
+   *    - in: query
+   *      name: to
+   *      description: Filter events that start or end before this date (ISO format)
+   *      required: false
+   *      schema:
+   *       type: string
+   *       format: date-time
+   *      example: 2023-12-31T23:59:59Z
    *   responses:
    *    '200':
    *     description: Successfully retrieved events
@@ -108,6 +124,22 @@ export default (router) => {
    *                 startTime: 32400
    *                 endTime: 39600
    *                 location: "Room S1042"
+   *        With date filtering:
+   *         value:
+   *          success: true
+   *          events:
+   *           - _id: "60c72b2f9b1e8d001c8e4f3a"
+   *             userId: "user123"
+   *             title: "Assignment 1"
+   *             courseID: "60c72b2f9b1e8d001c8e4f3b"
+   *             type: "assignment"
+   *             weight: 15
+   *             grade: null
+   *             isCompleted: false
+   *             end: "2024-10-15T23:59:00.000Z"
+   *             start: "2024-09-15T00:00:00.000Z"
+   *             location: "Submit online"
+   *             color: "#4A90E2"
    *    '401':
    *     $ref: '#/components/responses/Unauthorized'
    *    '500':
@@ -117,8 +149,16 @@ export default (router) => {
     const userId = req.user.userId;
     const isCompleted = req.query.completed === 'true';
     const expandCourse = req.query.expand === 'course';
+    const fromDate = req.query.from || null;
+    const toDate = req.query.to || null;
 
-    const { success, status, errors, events } = await getEvents(userId, isCompleted, expandCourse);
+    const { success, status, errors, events } = await getEvents(
+      userId,
+      isCompleted,
+      expandCourse,
+      fromDate,
+      toDate
+    );
 
     if (!success) {
       return res.status(status).json({ success: false, errors });
@@ -154,6 +194,22 @@ export default (router) => {
    *       type: string
    *       enum: [course]
    *      example: course
+   *    - in: query
+   *      name: from
+   *      description: Filter events that start or end after this date (ISO format)
+   *      required: false
+   *      schema:
+   *       type: string
+   *       format: date-time
+   *      example: 2023-09-01T00:00:00Z
+   *    - in: query
+   *      name: to
+   *      description: Filter events that start or end before this date (ISO format)
+   *      required: false
+   *      schema:
+   *       type: string
+   *       format: date-time
+   *      example: 2023-12-31T23:59:59Z
    *   responses:
    *    '200':
    *     description: Successfully retrieved events
@@ -234,6 +290,22 @@ export default (router) => {
    *                 startTime: 32400
    *                 endTime: 39600
    *                 location: "Room S1042"
+   *        With date filtering:
+   *         value:
+   *          success: true
+   *          events:
+   *           - _id: "60c72b2f9b1e8d001c8e4f3a"
+   *             userId: "user123"
+   *             title: "Assignment 1"
+   *             courseID: "60c72b2f9b1e8d001c8e4f3b"
+   *             type: "assignment"
+   *             weight: 15
+   *             grade: null
+   *             isCompleted: false
+   *             end: "2024-10-15T23:59:00.000Z"
+   *             start: "2024-09-15T00:00:00.000Z"
+   *             location: "Submit online"
+   *             color: "#4A90E2"
    *    '401':
    *     $ref: '#/components/responses/Unauthorized'
    *    '500':
@@ -243,11 +315,15 @@ export default (router) => {
     const userId = req.user.userId;
     const eventStatus = req.params.status;
     const expandCourse = req.query.expand === 'course';
+    const fromDate = req.query.from || null;
+    const toDate = req.query.to || null;
 
     const { success, status, errors, events } = await getEvents(
       userId,
       eventStatus === 'completed',
-      expandCourse
+      expandCourse,
+      fromDate,
+      toDate
     );
 
     if (!success) {
