@@ -1,35 +1,5 @@
 import mongoose from 'mongoose';
 
-const recurrenceSchema = new mongoose.Schema(
-  {
-    frequency: {
-      type: String,
-      enum: ['daily', 'weekly', 'monthly', 'yearly'],
-      required: true,
-    },
-    interval: {
-      type: Number,
-      required: true,
-      default: 1,
-    },
-    count: {
-      type: Number,
-      required: true,
-    },
-    daysOfWeek: {
-      type: [String],
-      validate: {
-        validator: function (v) {
-          const validDays = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-          return v.every((day) => validDays.includes(day));
-        },
-        message: (props) => `${props.value} contains invalid day codes!`,
-      },
-    },
-  },
-  { _id: false }
-);
-
 const eventSchema = new mongoose.Schema({
   userId: {
     type: String,
@@ -76,18 +46,12 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  allDay: {
-    type: Boolean,
-    default: false,
-  },
   location: {
     type: String,
   },
-  recurrence: {
-    type: recurrenceSchema,
-  },
   color: {
     type: String,
+    match: /^#[0-9A-Fa-f]{6}$/,
   },
 });
 
