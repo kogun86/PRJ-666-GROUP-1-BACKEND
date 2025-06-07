@@ -12,10 +12,10 @@ export default (router) => {
    *     Retrieve all events for the authenticated user with optional filters and expansions.
    *
    *     ### Example API calls:
-   *     - Get all events: `GET /api/events`
-   *     - Expand course details: `GET /api/events?expand=course`
-   *     - Filter by date range: `GET /api/events?from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
-   *     - Combine multiple filters: `GET /api/events?completed=true&expand=course&from=2023-09-01T00:00:00Z`
+   *     - Get all events: `GET /api/v1/events`
+   *     - Expand course details: `GET /api/v1/events?expand=course`
+   *     - Filter by date range: `GET /api/v1/events?from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
+   *     - Combine multiple filters: `GET /api/v1/events?completed=true&expand=course&from=2023-09-01T00:00:00Z`
    *   security:
    *    - BearerAuth: []
    *   parameters:
