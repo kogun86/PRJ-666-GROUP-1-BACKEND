@@ -174,4 +174,23 @@ async function createEvent(userId, data) {
   }
 }
 
-export { getEvents, updateCompletionStatus, updateGrade, createEvent };
+async function deleteEvent(eventId, userId) {
+  logger.debug(`Deleting event ${eventId} for user ${userId}`);
+
+  try {
+    const deletedEvent = await Event.findOneAndDelete({ _id: eventId, userId: userId });
+
+    if (!deletedEvent) {
+      logger.warn(`Event with ID ${eventId} not found for user ${userId}`);
+      return { success: false, status: 404, errors: ['Event not found'] };
+    }
+
+    logger.info(`Event ${eventId} successfully deleted for user ${userId}`);
+    return { success: true };
+  } catch (error) {
+    logger.error({ error }, `Error deleting event ${eventId}: `);
+    return { success: false, status: 500, errors: ['Internal server error'] };
+  }
+}
+
+export { getEvents, updateCompletionStatus, updateGrade, createEvent, deleteEvent };
