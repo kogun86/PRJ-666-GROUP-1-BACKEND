@@ -3,7 +3,7 @@ import { updateCompletionStatus, updateGrade } from '../event.controller.js';
 export default (router) => {
   /**
    * @swagger
-   * /{id}/grade:
+   * /events/{id}/grade:
    *  patch:
    *   tags:
    *    - Events
@@ -97,7 +97,7 @@ export default (router) => {
 
   /**
    * @swagger
-   * /{id}/grade/{status}:
+   * /events/{id}/status:
    *  patch:
    *   tags:
    *    - Events
@@ -166,7 +166,7 @@ export default (router) => {
    *    '500':
    *     $ref: '#/components/responses/InternalServerError'
    */
-  router.patch('/:id/grade/:status', async (req, res) => {
+  router.patch('/:id/status/:status', async (req, res) => {
     const userId = req.user.userId;
     const eventId = req.params.id;
     const eventStatus = req.params.status;

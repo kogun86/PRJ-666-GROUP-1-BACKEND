@@ -10,34 +10,48 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  courseCode: {
-    type: String,
+  courseID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
     required: true,
-  },
-  weight: {
-    type: Number,
-    required: true,
-  },
-  dueDate: {
-    type: Date,
-    required: true,
-  },
-  description: {
-    type: String,
   },
   type: {
     type: String,
     required: true,
-    // TODO: Rework with enum
+    enum: ['assignment', 'exam', 'project', 'quiz', 'test', 'homework'],
   },
-  isCompleted: {
-    type: Boolean,
-    default: false,
+  description: {
+    type: String,
+  },
+  weight: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100,
   },
   grade: {
     type: Number,
     max: 100,
     min: 0,
+    default: null,
+  },
+  isCompleted: {
+    type: Boolean,
+    default: false,
+  },
+  start: {
+    type: Date,
+  },
+  end: {
+    type: Date,
+    required: true,
+  },
+  location: {
+    type: String,
+  },
+  color: {
+    type: String,
+    match: /^#[0-9A-Fa-f]{6}$/,
   },
 });
 
