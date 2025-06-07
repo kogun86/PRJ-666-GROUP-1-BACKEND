@@ -7,9 +7,28 @@ import { getClasses } from '../class.controller.js';
  *   tags:
  *    - Classes
  *   summary: Get classes for the authenticated user
- *   description: Retrieve all classes for the authenticated user within a one-week period
+ *   description: Retrieve classes for the authenticated user with optional filtering and expansion
  *   security:
  *    - BearerAuth: []
+ *   parameters:
+ *    - in: query
+ *      name: from
+ *      schema:
+ *       type: string
+ *       format: date-time
+ *      description: Optional start date filter (ISO-8601 format)
+ *    - in: query
+ *      name: to
+ *      schema:
+ *       type: string
+ *       format: date-time
+ *      description: Optional end date filter (ISO-8601 format)
+ *    - in: query
+ *      name: expand
+ *      schema:
+ *       type: string
+ *       enum: [course]
+ *      description: Optional parameter to expand related data
  *   responses:
  *    '200':
  *     description: Successfully retrieved classes
@@ -39,7 +58,14 @@ export default (router) => {
   router.get('/', async (req, res) => {
     const userId = req.user.userId;
 
-    const { success, status, errors, classes } = await getClasses(userId);
+    // Extract query parameters
+    const options = {
+      from: req.query.from,
+      to: req.query.to,
+      expand: req.query.expand,
+    };
+
+    const { success, status, errors, classes } = await getClasses(userId, options);
 
     if (!success) {
       return res.status(status).json({ success: false, errors });
