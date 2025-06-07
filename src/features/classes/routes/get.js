@@ -8,6 +8,12 @@ import { getClasses } from '../class.controller.js';
  *    - Classes
  *   summary: Get classes for the authenticated user
  *   description: Retrieve classes for the authenticated user with optional filtering and expansion
+ *
+ *     ### Example API calls:
+ *     - Get all events: `GET /api/v1/classes`
+ *     - Expand course details: `GET /api/v1/classes?expand=course`
+ *     - Filter by date range: `GET /api/v1/classes?from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
+ *
  *   security:
  *    - BearerAuth: []
  *   parameters:
