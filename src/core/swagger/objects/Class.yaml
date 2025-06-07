@@ -32,6 +32,7 @@ components:
           enum:
             - lecture
             - lab
+            - tutorial
         startTime:
           type: string
           description: Start time of the class session
