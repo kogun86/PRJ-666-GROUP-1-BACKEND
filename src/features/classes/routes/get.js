@@ -14,6 +14,7 @@ import { getClasses } from '../class.controller.js';
  *     - Get all classes: `GET /api/v1/classes`
  *     - Expand course details: `GET /api/v1/classes?expand=course`
  *     - Filter by date range: `GET /api/v1/classes?from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
+ *     - Combine expansion with date filtering: `GET /api/v1/classes?expand=course&from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
  *   security:
  *    - BearerAuth: []
  *   parameters:
@@ -34,7 +35,7 @@ import { getClasses } from '../class.controller.js';
  *      schema:
  *       type: string
  *       enum: [course]
- *      description: Optional parameter to expand related data
+ *      description: Optional parameter to expand related data (can be combined with date filters)
  *   responses:
  *    '200':
  *     description: Successfully retrieved classes
