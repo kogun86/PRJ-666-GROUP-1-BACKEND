@@ -56,6 +56,70 @@ import { getClasses } from '../class.controller.js';
  *          items:
  *           type: object
  *           $ref: '#/components/schemas/Class'
+ *           properties:
+ *            courseId:
+ *             type: object
+ *             $ref: '#/components/schemas/Course'
+ *             description: Course details (only included when expand=course is specified)
+ *       examples:
+ *        Default response:
+ *         value:
+ *          success: true
+ *          classes:
+ *           - _id: "60c72b2f9b1e8d001c8e4f3a"
+ *             userId: "user123"
+ *             courseId: "60c72b2f9b1e8d001c8e4f3b"
+ *             classType: "lecture"
+ *             startTime: "2024-09-15T09:00:00.000Z"
+ *             endTime: "2024-09-15T11:00:00.000Z"
+ *             events: []
+ *             topics: ["Introduction to Programming"]
+ *        With expanded course:
+ *         value:
+ *          success: true
+ *          classes:
+ *           - _id: "60c72b2f9b1e8d001c8e4f3a"
+ *             userId: "user123"
+ *             classType: "lecture"
+ *             startTime: "2024-09-15T09:00:00.000Z"
+ *             endTime: "2024-09-15T11:00:00.000Z"
+ *             events: []
+ *             topics: ["Introduction to Programming"]
+ *             courseId:
+ *              _id: "60c72b2f9b1e8d001c8e4f3b"
+ *              userId: "user123"
+ *              title: "Introduction to Programming"
+ *              code: "IPC144"
+ *              section: "A"
+ *              color: "#3498db"
+ *              status: "active"
+ *              startDate: "2024-09-05T00:00:00.000Z"
+ *              endDate: "2025-12-15T00:00:00.000Z"
+ *              instructor:
+ *               name: "John Smith"
+ *               email: "john.smith@example.com"
+ *               availableTimeSlots:
+ *                - weekday: 1
+ *                  startTime: 32400
+ *                  endTime: 39600
+ *              schedule:
+ *               - classType: "lecture"
+ *                 weekday: 1
+ *                 startTime: 32400
+ *                 endTime: 39600
+ *                 location: "Room S1042"
+ *        With date filtering:
+ *         value:
+ *          success: true
+ *          classes:
+ *           - _id: "60c72b2f9b1e8d001c8e4f3a"
+ *             userId: "user123"
+ *             courseId: "60c72b2f9b1e8d001c8e4f3b"
+ *             classType: "lecture"
+ *             startTime: "2024-09-15T09:00:00.000Z"
+ *             endTime: "2024-09-15T11:00:00.000Z"
+ *             events: []
+ *             topics: ["Introduction to Programming"]
  *    '401':
  *     $ref: '#/components/responses/Unauthorized'
  *    '500':
