@@ -29,6 +29,11 @@ const Course = z.object({
   title: z.string().max(30),
   code: z.string().max(10),
   section: z.string().max(10).optional(),
+  color: z
+    .string()
+    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
+    .optional()
+    .default('#3498db'),
   status: z.enum(['active', 'inactive']).default('active'),
   startDate: z.iso.date(),
   endDate: z.iso.date(),
