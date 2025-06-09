@@ -17,6 +17,10 @@ const courseSchema = new mongoose.Schema({
   section: {
     type: String,
   },
+  color: {
+    type: String,
+    default: '#3498db', // Default blue color
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],

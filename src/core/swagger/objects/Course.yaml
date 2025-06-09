@@ -38,6 +38,11 @@ components:
           description: Specific section of course
           minLength: 1
           maxLength: 10
+        color:
+          type: string
+          description: HEX color code for the course visualization
+          pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+          example: '#3498db'
         status:
           type: string
           description: Indicates course activity status
