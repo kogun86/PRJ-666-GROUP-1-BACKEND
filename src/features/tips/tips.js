@@ -6,18 +6,20 @@ export default (router) => {
    * /tips:
    *  get:
    *   tags:
-   *    - Chat
+   *    - Tips
    *   summary: Get AI-generated personalized study tips
    *   description: |
    *     Retrieve AI-generated personalized study tips based on the user's upcoming and completed events.
    *
-   *     The tips are generated using the OpenRouter AI API and are tailored to the user's specific
-   *     academic situation, including upcoming deadlines, completed work, available study time,
-   *     and preferred study style.
+   *     The tips analyze the user's course schedule, upcoming assignments, tests, and other academic events
+   *     to provide tailored recommendations for effective studying. The AI considers deadlines, assignment weights,
+   *     completed work, and user preferences to generate relevant study advice.
    *
    *     ### Example API calls:
    *     - Basic request: `GET /api/v1/tips`
-   *     - With study preferences: `GET /api/v1/tips?timeAvailable=20&studyStyle=pomodoro`
+   *     - With study time available: `GET /api/v1/tips?timeAvailable=20`
+   *     - With study style preference: `GET /api/v1/tips?studyStyle=pomodoro`
+   *     - With both parameters: `GET /api/v1/tips?timeAvailable=20&studyStyle=pomodoro`
    *   security:
    *    - BearerAuth: []
    *   parameters:
@@ -30,7 +32,7 @@ export default (router) => {
    *      example: 20
    *    - in: query
    *      name: studyStyle
-   *      description: User's preferred study style or technique
+   *      description: User's preferred study style or technique (e.g., pomodoro, spaced repetition, active recall)
    *      required: false
    *      schema:
    *       type: string
@@ -52,12 +54,20 @@ export default (router) => {
    *          default: true
    *         tips:
    *          type: string
-   *          description: AI-generated study tips and recommendations
+   *          description: AI-generated study tips and recommendations based on user's academic schedule and events
    *       examples:
-   *        Default response:
+   *        With upcoming events:
    *         value:
    *          success: true
    *          tips: "Based on your upcoming assignments, I recommend prioritizing your Programming Project due next week. Here's a study schedule: Monday - Research phase (2 hours), Tuesday - Planning (1.5 hours)..."
+   *        With no events:
+   *         value:
+   *          success: true
+   *          tips: "I don't have any events to analyze. Add some assignments, tests, or projects to get personalized study tips!"
+   *        With completed events only:
+   *         value:
+   *          success: true
+   *          tips: "You don't have any upcoming assignments or tests. Based on your completed work, I recommend reviewing the material from your recent Database exam where you scored 85%..."
    *    '401':
    *     $ref: '#/components/responses/Unauthorized'
    *    '500':

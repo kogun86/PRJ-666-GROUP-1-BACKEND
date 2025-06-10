@@ -1,0 +1,11 @@
+StudyTipsInput:
+  type: object
+  properties:
+    timeAvailable:
+      type: number
+      description: Amount of time available for studying (in hours)
+      example: 20
+    studyStyle:
+      type: string
+      description: User's preferred study style or technique (e.g., pomodoro, spaced repetition, active recall)
+      example: pomodoro
