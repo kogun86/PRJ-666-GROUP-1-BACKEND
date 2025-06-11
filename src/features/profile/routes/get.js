@@ -9,7 +9,7 @@ export default (router) => {
    *    - Profile
    *   summary: Get profile data for the authenticated user
    *   description: |
-   *     Retrieves profile data for the authenticated user, including the closest upcoming event and completion percentage for the current semester.
+   *     Retrieves profile data for the authenticated user, including the closest upcoming pending event and completion percentage for the current semester.
    *
    *     ### Example API call:
    *     - Get profile data: `GET /api/v1/profile`
@@ -21,34 +21,7 @@ export default (router) => {
    *     content:
    *      application/json:
    *       schema:
-   *        type: object
-   *        required:
-   *         - success
-   *         - upcomingEvent
-   *         - completionPercentage
-   *         - hasEvents
-   *        properties:
-   *         success:
-   *          type: boolean
-   *          description: Indicates if the request was successful
-   *          default: true
-   *         upcomingEvent:
-   *          type: object
-   *          description: The closest upcoming event (null if no upcoming events)
-   *          $ref: '#/components/schemas/Event'
-   *          properties:
-   *           course:
-   *            type: object
-   *            $ref: '#/components/schemas/Course'
-   *            description: Course details for the upcoming event
-   *         completionPercentage:
-   *          type: number
-   *          description: Percentage of completed events in the current semester (0-100)
-   *          minimum: 0
-   *          maximum: 100
-   *         hasEvents:
-   *          type: boolean
-   *          description: Indicates if the user has any events in the current semester
+   *        $ref: '#/components/schemas/Profile'
    *       examples:
    *        With upcoming event:
    *         value:
