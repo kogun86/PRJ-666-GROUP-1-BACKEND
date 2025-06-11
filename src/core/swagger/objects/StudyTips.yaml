@@ -1,0 +1,16 @@
+StudyTips:
+  type: object
+  required:
+    - success
+    - tips
+  properties:
+    success:
+      type: boolean
+      description: Indicates if the request was successful
+      default: true
+    tips:
+      type: string
+      description: AI-generated study tips and recommendations based on user's academic schedule and events
+  example:
+    success: true
+    tips: "Based on your upcoming assignments, I recommend prioritizing your Programming Project due next week. Here's a study schedule: Monday - Research phase (2 hours), Tuesday - Planning (1.5 hours)..."
