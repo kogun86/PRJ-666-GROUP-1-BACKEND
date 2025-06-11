@@ -50,10 +50,11 @@ async function getProfileData(userId) {
     const completionPercentage =
       totalEvents > 0 ? Math.round((completedEvents / totalEvents) * 100) : 0;
 
-    // Find the closest upcoming event
+    // Find the closest upcoming pending event
     const upcomingEvents = await Event.find({
       userId,
       end: { $gte: currentDate },
+      isCompleted: false,
     })
       .sort({ end: 1 })
       .limit(1);
