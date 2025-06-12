@@ -18,6 +18,7 @@ import eventRoutes from './features/events/routes/index.js';
 import chatRoutes from './features/chat/routes/index.js';
 import todoRoutes from './features/todo/routes/index.js';
 import tipsRoutes from './features/tips/index.js';
+import goalRoutes from './features/goals/routes/index.js';
 
 // Set up Express app
 const app = express();
@@ -45,6 +46,7 @@ app.use('/api/v1/events', authenticate, eventRoutes);
 app.use('/api/v1/chat', authenticate, chatRoutes);
 app.use('/api/v1/smart-todo', authenticate, todoRoutes);
 app.use('/api/v1/tips', authenticate, tipsRoutes);
+app.use('/api/v1/goals', authenticate, goalRoutes);
 
 // Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
