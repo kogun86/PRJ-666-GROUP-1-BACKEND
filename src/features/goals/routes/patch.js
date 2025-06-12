@@ -3,7 +3,7 @@ import { updateGoal } from '../goal.controller.js';
 /**
  * @swagger
  * /goal/{goalId}:
- *  put:
+ *  patch:
  *   tags:
  *    - Goals
  *   summary: Update an existing goal for the authenticated user
@@ -93,7 +93,7 @@ import { updateGoal } from '../goal.controller.js';
  *     $ref: '#/components/responses/InternalServerError'
  */
 export default (router) => {
-  router.put('/:goalId', async (req, res) => {
+  router.patch('/:goalId', async (req, res) => {
     const userId = req.user.userId;
     const goalId = req.params.goalId;
     const targetGrade = req.body.targetGrade;
