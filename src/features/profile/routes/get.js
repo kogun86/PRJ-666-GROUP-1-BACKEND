@@ -1,4 +1,4 @@
-import { getProfileData } from '../profile.controller.js';
+import { getProfileData, getUserAvatar } from '../profile.controller.js';
 
 export default (router) => {
   /**
@@ -82,6 +82,64 @@ export default (router) => {
       upcomingEvent,
       completionPercentage,
       hasEvents,
+    });
+  });
+
+  /**
+   * @swagger
+   * /profile/avatar:
+   *  get:
+   *   tags:
+   *    - Profile
+   *   summary: Get avatar URL for the authenticated user
+   *   description: |
+   *     Retrieves the avatar URL for the authenticated user.
+   *
+   *     ### Example API call:
+   *     - Get avatar URL: `GET /api/v1/profile/avatar`
+   *   security:
+   *    - BearerAuth: []
+   *   responses:
+   *    '200':
+   *     description: Successfully retrieved avatar URL
+   *     content:
+   *      application/json:
+   *       schema:
+   *        $ref: '#/components/schemas/AvatarResponse'
+   *    '404':
+   *     description: User not found
+   *     content:
+   *      application/json:
+   *       schema:
+   *        type: object
+   *        required:
+   *         - success
+   *         - errors
+   *        properties:
+   *         success:
+   *          type: boolean
+   *          default: false
+   *         errors:
+   *          type: array
+   *          items:
+   *           type: string
+   *    '401':
+   *     $ref: '#/components/responses/Unauthorized'
+   *    '500':
+   *     $ref: '#/components/responses/InternalServerError'
+   */
+  router.get('/avatar', async (req, res) => {
+    const userId = req.user.userId;
+
+    const { success, status, errors, avatarURL } = await getUserAvatar(userId);
+
+    if (!success) {
+      return res.status(status).json({ success: false, errors });
+    }
+
+    return res.status(200).json({
+      success: true,
+      avatarURL,
     });
   });
 };

@@ -1,0 +1,111 @@
+components:
+  schemas:
+    AvatarSignatureResponse:
+      type: object
+      required:
+        - success
+        - timestamp
+        - signature
+        - apiKey
+        - cloudName
+        - publicId
+        - folder
+        - transformation
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          default: true
+        timestamp:
+          type: integer
+          description: Unix timestamp for the signature
+          example: 1626254245
+        signature:
+          type: string
+          description: Cloudinary signature for client-side upload
+          example: 'a1b2c3d4e5f6g7h8i9j0'
+        apiKey:
+          type: string
+          description: Cloudinary API key
+          example: '123456789012345'
+        cloudName:
+          type: string
+          description: Cloudinary cloud name
+          example: 'your-cloud-name'
+        publicId:
+          type: string
+          description: Public ID to use for the uploaded image
+          example: 'user123'
+        folder:
+          type: string
+          description: Folder to upload the image to
+          example: 'avatars'
+        transformation:
+          type: string
+          description: Transformation to apply to the image
+          example: 'c_thumb,g_face,h_256,w_256'
+
+    AvatarUpdateInput:
+      type: object
+      required:
+        - avatarURL
+      properties:
+        avatarURL:
+          type: string
+          description: URL of the uploaded avatar image
+          format: uri
+          example: 'https://res.cloudinary.com/cloud-name/image/upload/v1626254245/avatars/user123.jpg'
+        assetId:
+          type: string
+          description: Cloudinary asset ID
+          example: 'a1b2c3d4e5f6g7h8i9j0'
+        width:
+          type: integer
+          description: Width of the uploaded image in pixels
+          example: 256
+        height:
+          type: integer
+          description: Height of the uploaded image in pixels
+          example: 256
+
+    AvatarUpdateResponse:
+      type: object
+      required:
+        - success
+        - user
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          default: true
+        user:
+          type: object
+          required:
+            - _id
+            - avatarURL
+          properties:
+            _id:
+              type: string
+              description: User ID
+              example: 'user123'
+            avatarURL:
+              type: string
+              description: URL of the user's avatar
+              format: uri
+              example: 'https://res.cloudinary.com/cloud-name/image/upload/v1626254245/avatars/user123.jpg'
+
+    AvatarResponse:
+      type: object
+      required:
+        - success
+        - avatarURL
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          default: true
+        avatarURL:
+          type: string
+          description: URL of the user's avatar
+          format: uri
+          example: 'https://res.cloudinary.com/cloud-name/image/upload/v1626254245/avatars/user123.jpg'
