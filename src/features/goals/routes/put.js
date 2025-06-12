@@ -78,9 +78,16 @@ export default (router) => {
   router.put('/:goalId', async (req, res) => {
     const userId = req.user.userId;
     const goalId = req.params.goalId;
-    const goalData = req.body;
+    const targetGrade = req.body.targetGrade;
 
-    const { success, status, errors, goal } = await updateGoal(userId, goalId, goalData);
+    if (typeof targetGrade !== 'number' || targetGrade < 0 || targetGrade > 100) {
+      return res.status(400).json({
+        success: false,
+        errors: ['Invalid target grade. It must be a number between 0 and 100.'],
+      });
+    }
+
+    const { success, status, errors, goal } = await updateGoal(userId, goalId, targetGrade);
 
     if (!success) {
       return res.status(status).json({ success: false, errors });

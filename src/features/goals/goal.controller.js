@@ -40,19 +40,15 @@ async function getGoals(
   }
 }
 
-async function updateGoal(userId, goalId, data) {
+async function updateGoal(userId, goalId, targetGrade) {
   logger.debug(`Updating goal ${goalId} for user ${userId}`);
 
-  const { success, parsedData, errors } = validateGoal({ ...data, userId });
-
-  if (!success) {
-    return { success: false, status: 400, errors };
-  }
-
   try {
-    const updatedGoal = await Goal.findOneAndUpdate({ _id: goalId, userId }, parsedData, {
-      new: true,
-    });
+    const updatedGoal = await Goal.findOneAndUpdate(
+      { _id: goalId, userId },
+      { targetGrade },
+      { new: true }
+    );
 
     if (!updatedGoal) {
       logger.warn(`Goal with ID ${goalId} not found for user ${userId}`);
@@ -86,6 +82,7 @@ async function deleteGoal(userId, goalId) {
   }
 }
 
+// TODO: You cannot have multiple gaols with the same name for the same course
 async function createGoal(userId, data) {
   logger.debug('Starting goal creation process');
   const { success, parsedData, errors } = validateGoal({ ...data, userId });
