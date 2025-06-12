@@ -1,0 +1,19 @@
+components:
+  schemas:
+    GoalInput:
+      type: object
+      required:
+        - courseId
+        - targetGrade
+        - dateCreated
+      properties:
+        courseId:
+          type: string
+          description: Links goal to specific course
+          minLength: 24
+          maxLength: 24
+        targetGrade:
+          type: number
+          description: Desired grade for the course
+          minimum: 0
+          maximum: 100

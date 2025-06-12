@@ -1,0 +1,35 @@
+components:
+  schemas:
+    Goal:
+      type: object
+      required:
+        - _id
+        - userId
+        - courseId
+        - targetGrade
+        - dateCreated
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the goal
+          minLength: 24
+          maxLength: 24
+          example: 60c72b2f9b1e8d001c8e4f3a
+        userId:
+          type: string
+          description: Links goal to specific user
+          minLength: 1
+        courseId:
+          type: string
+          description: Links goal to specific course
+          minLength: 24
+          maxLength: 24
+        targetGrade:
+          type: number
+          description: Desired grade for the course
+          minimum: 0
+          maximum: 100
+        dateCreated:
+          type: string
+          description: Date when the goal was created
+          format: date-time
