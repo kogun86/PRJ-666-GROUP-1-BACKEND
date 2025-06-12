@@ -34,6 +34,24 @@ export default (router) => {
    *          default: true
    *         goal:
    *          $ref: '#/components/schemas/Goal'
+   *    '400':
+   *     description: Bad request, validation errors
+   *     content:
+   *      application/json:
+   *       schema:
+   *        type: object
+   *        required:
+   *         - success
+   *         - errors
+   *        properties:
+   *         success:
+   *          type: boolean
+   *          default: false
+   *         errors:
+   *          type: array
+   *          items:
+   *           type: string
+   *           example: "Goal for this course already exists"
    *    '401':
    *     $ref: '#/components/responses/Unauthorized'
    *    '500':
