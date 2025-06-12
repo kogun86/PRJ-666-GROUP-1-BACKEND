@@ -100,6 +100,11 @@ async function createGoal(userId, data) {
     logger.info({ goal }, 'Event created successfully and saved to database');
     return { success: true, goal };
   } catch (error) {
+    if (error.code == 11000) {
+      logger.warn({ error }, 'Goal for this course already exists');
+      return { success: false, status: 400, errors: ['Goal for this course already exists'] };
+    }
+
     logger.error({ error }, 'Error creating goal');
     return { success: false, status: 500, errors: ['Internal server error'] };
   }
