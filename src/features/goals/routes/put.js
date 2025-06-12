@@ -51,6 +51,24 @@ import { updateGoal } from '../goal.controller.js';
  *          default: true
  *         goal:
  *          $ref: '#/components/schemas/Goal'
+ *    '400':
+ *     description: Bad request, validation errors
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *         - success
+ *         - errors
+ *        properties:
+ *         success:
+ *          type: boolean
+ *          default: false
+ *         errors:
+ *          type: array
+ *          items:
+ *           type: string
+ *           example: "Invalid target grade. It must be a number between 0 and 100."
  *    '404':
  *     description: Goal not found
  *     content:
