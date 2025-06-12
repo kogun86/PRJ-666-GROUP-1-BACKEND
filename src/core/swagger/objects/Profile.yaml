@@ -1,0 +1,35 @@
+components:
+  schemas:
+    Profile:
+      type: object
+      required:
+        - success
+        - upcomingEvent
+        - completionPercentage
+        - hasEvents
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          default: true
+        upcomingEvent:
+          type: object
+          description: The closest upcoming pending event (null if no upcoming events)
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Event'
+          properties:
+            course:
+              type: object
+              $ref: '#/components/schemas/Course'
+              description: Course details for the upcoming event
+        completionPercentage:
+          type: number
+          description: Percentage of completed events in the current semester (0-100)
+          minimum: 0
+          maximum: 100
+          example: 75
+        hasEvents:
+          type: boolean
+          description: Indicates if the user has any events in the current semester
+          example: true

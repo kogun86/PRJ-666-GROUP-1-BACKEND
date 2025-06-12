@@ -61,7 +61,8 @@ async function getEvents(
     }
 
     logger.debug({ query }, 'Database query for events');
-    const events = await Event.find(query);
+    // Sort events by start date in ascending order (earliest first)
+    const events = await Event.find(query).sort({ start: 1 });
 
     logger.info(`Found ${events.length} events for user ${userId}`);
 
