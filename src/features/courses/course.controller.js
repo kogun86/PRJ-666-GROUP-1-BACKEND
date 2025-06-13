@@ -74,6 +74,70 @@ async function createCourse(userId, data) {
   );
 }
 
+async function updateCourse(courseId, userId, data) {
+  logger.info(`Updating course ${courseId} for user ${userId}`);
+
+  try {
+    // Check if the course exists and belongs to the user
+    const existingCourse = await Course.findOne({ _id: courseId, userId });
+
+    if (!existingCourse) {
+      logger.info(`Course ${courseId} not found for user ${userId}`);
+      return { success: false, status: 404, errors: ['Course not found'] };
+    }
+
+    // Validate the update data
+    const { success, parsedData, errors } = validateCourse({
+      ...data,
+      userId,
+      // Preserve existing values if not provided in update
+      title: data.title || existingCourse.title,
+      code: data.code || existingCourse.code,
+      instructor: data.instructor || existingCourse.instructor,
+      startDate: data.startDate || existingCourse.startDate,
+      endDate: data.endDate || existingCourse.endDate,
+      schedule: data.schedule || existingCourse.schedule,
+    });
+
+    if (!success) {
+      return { success: false, status: 400, errors };
+    }
+
+    // Update the course
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, parsedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    logger.info({ updatedCourse }, 'Course updated successfully');
+
+    // If schedule was updated, we may need to update classes
+    if (data.schedule || data.startDate || data.endDate) {
+      logger.info('Schedule or dates changed, updating classes');
+      // Delete existing classes for this course
+      await Class.deleteMany({ courseId, userId });
+
+      // Create new classes based on updated schedule
+      const classResult = await createClassesInPeriod(
+        userId,
+        courseId,
+        updatedCourse.schedule,
+        updatedCourse.startDate,
+        updatedCourse.endDate
+      );
+
+      if (!classResult.success) {
+        return classResult;
+      }
+    }
+
+    return { success: true, course: updatedCourse };
+  } catch (error) {
+    logger.error({ error }, `Error updating course ${courseId}`);
+    return { success: false, status: 500, errors: ['Internal server error'] };
+  }
+}
+
 async function deleteCourse(courseId, userId) {
   logger.info(`Deleting course ${courseId} for user ${userId}`);
 
@@ -111,4 +175,4 @@ async function deleteCourse(courseId, userId) {
   }
 }
 
-export { getCourses, createCourse, deleteCourse };
+export { getCourses, createCourse, updateCourse, deleteCourse };
