@@ -1,0 +1,50 @@
+components:
+  schemas:
+    CourseUpdateInput:
+      type: object
+      description: Schema for updating an existing course. All fields are optional.
+      properties:
+        title:
+          type: string
+          description: Full name of the course
+          minLength: 1
+          maxLength: 30
+        code:
+          type: string
+          description: Official course code identifier
+          minLength: 1
+          maxLength: 10
+        section:
+          type: string
+          description: Specific section of course
+          minLength: 1
+          maxLength: 10
+        color:
+          type: string
+          description: HEX color code for the course visualization
+          pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+          example: '#3498db'
+        status:
+          type: string
+          description: Indicates course activity status
+          enum:
+            - active
+            - inactive
+        startDate:
+          type: string
+          description: Course start calendar date
+          format: date
+        endDate:
+          type: string
+          description: Course end calendar date
+          format: date
+        instructor:
+          type: object
+          description: Contains information about the course instructor
+          $ref: '#/components/schemas/Instructor'
+        schedule:
+          type: array
+          description: Array of class session objects
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ScheduleRecord'
