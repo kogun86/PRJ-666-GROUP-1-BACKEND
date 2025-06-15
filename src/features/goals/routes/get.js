@@ -56,9 +56,7 @@ export default (router) => {
 
     return res.status(200).json({ success: true, goals });
   });
-
-  // Swagger Documentation for report endpoint
-
+  
   /**
  * @swagger
  * /goals/{goalId}/report:

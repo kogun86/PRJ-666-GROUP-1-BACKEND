@@ -59,8 +59,6 @@ export default (router) => {
     return res.status(200).json({ success: true, courses });
   });
 
-
-  // Swagger Documentation Here:
   /**
  * @swagger
  * /courses/grades:
