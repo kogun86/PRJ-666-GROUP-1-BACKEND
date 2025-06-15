@@ -1,0 +1,34 @@
+components:
+  schemas:
+    CourseGrades:
+      type: object
+      required:
+        - _id
+        - code
+        - title
+      properties:
+        _id:
+          type: string
+          description: Course ID (MongoDB ObjectId)
+          pattern: '^[0-9a-fA-F]{24}$'
+          example: "6640bf9b6c3c686b497347fa"
+        code:
+          type: string
+          description: Course code
+          minLength: 1
+          maxLength: 10
+          example: "PRJ166"
+        title:
+          type: string
+          description: Course title
+          minLength: 1
+          maxLength: 100
+          example: "Test Program"
+        currentGrade:
+          type: number
+          format: float
+          nullable: true
+          description: >
+            Weighted average of graded events for the course (0–100).
+            May be null if no graded events exist yet.
+          example: 78.5

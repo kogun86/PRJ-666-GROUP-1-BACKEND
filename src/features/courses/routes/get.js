@@ -61,7 +61,58 @@ export default (router) => {
 
 
   // Swagger Documentation Here:
-
+  /**
+ * @swagger
+ * /courses/grades:
+ *   get:
+ *     tags:
+ *       - Courses
+ *     summary: Get current weighted grade for each active course
+ *     description: >
+ *       Returns a list of all **active** courses for the authenticated user,
+ *       each with the user's current weighted grade calculated from completed
+ *       tasks. Courses with no graded tasks yet will have `currentGrade = null`.
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved active courses with grades
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - success
+ *                 - courses
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                   default: true
+ *                 courses:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         description: Course ID
+ *                       code:
+ *                         type: string
+ *                         description: Course code
+ *                       title:
+ *                         type: string
+ *                         description: Course title
+ *                       currentGrade:
+ *                         type: number
+ *                         nullable: true
+ *                         description: >
+ *                           Weighted average grade (0‑100). Null if no graded tasks yet.
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 
   router.get('/grades', async (req, res) => {
     const userId = req.user.userId;

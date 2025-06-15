@@ -59,6 +59,48 @@ export default (router) => {
 
   // Swagger Documentation for report endpoint
 
+  /**
+ * @swagger
+ * /goals/{goalId}/report:
+ *   get:
+ *     tags:
+ *       - Goals
+ *     summary: Get detailed goal report for user
+ *     description: Returns current status, past events, upcoming tasks, and achievement recommendations for a specific goal.
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: goalId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 684e5807de51ac578ff5e348
+ *         description: The ID of the goal to retrieve the report for.
+ *     responses:
+ *       200:
+ *         description: Goal report successfully retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GoalReport'
+ *       404:
+ *         description: Goal not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["Goal not found"]
+ */
+
   router.get('/:goalId/report', async (req, res) => {
     const userId = req.user.userId;
     const {success, status, errors, report} = await getGoalReport(userId, req.params.goalId);
