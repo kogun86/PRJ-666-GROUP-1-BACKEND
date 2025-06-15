@@ -149,6 +149,11 @@ async function getGoalReport(userId, goalId) {
   let requiredAvgForRemaining = null;
   let achievable = true;
 
+  if(totalWeightSoFar > 100) {
+    logger.warn(`Total weight exceeds 100%: ${totalWeightSoFar}`);
+    return { success: false, status: 400, errors: ['Total weight exceeds 100%'] };
+  }
+
   if (futureWeightAdjusted > 0) {
     requiredAvgForRemaining =
       (goal.targetGrade * 100 - currentGrade * pastWeight) / futureWeightAdjusted;
@@ -158,8 +163,9 @@ async function getGoalReport(userId, goalId) {
     // No remaining weight to achieve the goal, Achievable only if the current grade is already at or above the target. 
     achievable = currentGrade >= goal.targetGrade;
   }
-
-    logger.warn(`Total Weight: ${pastWeight + remainingWeight}`);
+  logger.info(`Allocated Weight: ${pastWeight}`);
+  logger.info(`Remaining Weight: ${remainingWeight}`);
+  logger.warn(`Total Weight: ${totalWeightSoFar}`);
 
   const recommendation = achievable? 'ON_TRACK' : 'CONSIDER_ADJUSTING_GOAL';
 
