@@ -47,6 +47,51 @@ async function getCourses(userId, active = true) {
   }
 }
 
+async function getCurrentGrades(userId, active = true) {
+  logger.debug(`Fetching current grades for user ${userId} with active status: ${active}`);
+  try {
+    // Fetch active courses only
+    const courses = await Course.find({userId, status: active ? 'active' : 'inactive'});
+    // Fetching all grades for the current courses
+    const coursesWithGrades = await Promise.all(
+      courses.map(async (course) => {
+        const events = await Event.find({
+          userId,
+          courseID: course._id,
+          grade:  { $ne: null },
+          weight: { $ne: null },
+        });
+
+        // Calculate weighted average grade
+        let currentGrade = null;
+        if (events.length) {
+          const { weightedSum, totalWeight } = events.reduce(
+            (acc, ev) => ({
+              weightedSum: acc.weightedSum + ev.grade * ev.weight,
+              totalWeight: acc.totalWeight + ev.weight,
+            }),
+            { weightedSum: 0, totalWeight: 0 }
+          );
+          if (totalWeight > 0) currentGrade = weightedSum / totalWeight;
+        }
+
+        // API response structure
+        return {
+          _id:   course._id,
+          code:  course.code,
+          title: course.title,
+          currentGrade,
+        };
+      })
+    );
+
+    return ({ success: true, courses: coursesWithGrades });
+  } catch (err) {
+    logger.error(err);
+    return ({ success: false, status: 500, errors: ['Internal server error'] });
+  }
+}
+
 async function createCourse(userId, data) {
   logger.debug('Starting course creation process');
   const { success, parsedData, errors } = validateCourse({ ...data, userId });
@@ -175,4 +220,4 @@ async function deleteCourse(courseId, userId) {
   }
 }
 
-export { getCourses, createCourse, updateCourse, deleteCourse };
+export { getCourses, getCurrentGrades, createCourse, updateCourse, deleteCourse };

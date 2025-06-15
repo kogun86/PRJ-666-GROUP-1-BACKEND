@@ -1,4 +1,4 @@
-import { getCourses } from '../course.controller.js';
+import { getCourses, getCurrentGrades } from '../course.controller.js';
 
 export default (router) => {
   /**
@@ -58,4 +58,26 @@ export default (router) => {
 
     return res.status(200).json({ success: true, courses });
   });
-};
+
+
+  // Swagger Documentation Here:
+
+
+  router.get('/grades', async (req, res) => {
+    const userId = req.user.userId;
+    const { active } = req.query;
+    
+    const { success, status, errors, courses } = await getCurrentGrades(
+      userId,
+      active ? JSON.parse(active) : undefined
+    );
+
+    if (!success) {
+      return res.status(status).json({ success: false, errors });
+    }
+
+    return res.status(200).json({ success: true, courses });
+
+  });
+
+}
