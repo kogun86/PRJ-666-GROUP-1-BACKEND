@@ -158,8 +158,6 @@ export default (router) => {
     const expandCourse = req.query.expand === 'course';
     const fromDate = req.query.from || null;
     const toDate = req.query.to || null;
-
-    // Added
     const courseId = req.query.courseId || null;
 
     const { success, status, errors, events } = await getEvents(
