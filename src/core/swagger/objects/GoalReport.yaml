@@ -25,10 +25,28 @@ components:
           description: User’s target grade for the course
           example: 90
         currentGrade:
-          type: number
-          format: float
-          description: User’s current weighted grade in the course
-          example: 64.19
+          type: object
+          nullable: true
+          description: >
+            Object containing the current grade details for the course.
+            May be null if no graded events exist yet.
+          properties:
+            avg:
+              type: number
+              format: float
+              nullable: true
+              description: The current average of the calculated weight in the course.
+              example: 78.5
+            totalWeightSoFar:
+              type: number
+              format: float
+              description: The weight currently allocated (sum of all graded event weights).
+              example: 60
+            weightRemaining:
+              type: number
+              format: float
+              description: The weight remaining for the current course (100 - totalWeightSoFar).
+              example: 40
         pastEvents:
           type: array
           description: Graded tasks completed in the course

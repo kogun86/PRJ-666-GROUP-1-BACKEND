@@ -59,7 +59,7 @@ export default (router) => {
     return res.status(200).json({ success: true, courses });
   });
 
-  /**
+/**
  * @swagger
  * /courses/grades:
  *   get:
@@ -102,10 +102,28 @@ export default (router) => {
  *                         type: string
  *                         description: Course title
  *                       currentGrade:
- *                         type: number
+ *                         type: object
  *                         nullable: true
  *                         description: >
- *                           Weighted average grade (0‑100). Null if no graded tasks yet.
+ *                           Object containing the current grade details for the course.
+ *                           May be null if no graded tasks exist yet.
+ *                         properties:
+ *                           avg:
+ *                             type: number
+ *                             format: float
+ *                             nullable: true
+ *                             description: The current average of the calculated weight in the course.
+ *                             example: 78.5
+ *                           totalWeightSoFar:
+ *                             type: number
+ *                             format: float
+ *                             description: The weight currently allocated (sum of all graded event weights).
+ *                             example: 60
+ *                           weightRemaining:
+ *                             type: number
+ *                             format: float
+ *                             description: The weight remaining for the current course (100 - totalWeightSoFar).
+ *                             example: 40
  *       '401':
  *         $ref: '#/components/responses/Unauthorized'
  *       '500':

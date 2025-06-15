@@ -129,7 +129,7 @@ async function getGoalReport(userId, goalId) {
   const past = events.filter(e => e.grade !== null);
   const future = events.filter(e => e.grade === null);
 
-  const {avg: currentGrade, totalWeight: pastWeight} = weightedAverage(past);
+  const {avg: currentGrade, totalWeightSoFar: pastWeight} = weightedAverage(past);
   // Determine if past events met the target grade
   const pastCategories = past.map(e => ({
     ...e,
