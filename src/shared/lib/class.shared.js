@@ -63,4 +63,25 @@ function getClassesFromSchedule(schedule, startDate, endDate) {
   return classes;
 }
 
-export { createClassesInPeriod };
+function weightedAverage(events){
+  const {weightedSum, totalWeight } = events.reduce(
+    (acc, ev) => ({
+      weightedSum: acc.weightedSum + ev.grade * ev.weight,
+      totalWeight: acc.totalWeight + ev.weight,
+    }),
+    {weightedSum: 0, totalWeight: 0}
+  );
+  return{
+    avg: totalWeight > 0 ? weightedSum / totalWeight : null,
+    totalWeight,
+  }
+}
+
+function categorizePriority(weight){
+  if(weight >= 20) return 'high';
+  if(weight >= 10) return 'medium';
+  return 'low';
+}
+
+
+export { createClassesInPeriod, weightedAverage, categorizePriority };

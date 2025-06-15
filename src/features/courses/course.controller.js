@@ -1,6 +1,6 @@
 import validateCourse from './course.validator.js';
 import logger from '../../shared/utils/logger.js';
-import { createClassesInPeriod } from '../../shared/lib/class.shared.js';
+import { createClassesInPeriod, weightedAverage } from '../../shared/lib/class.shared.js';
 
 import Course from '../../shared/models/course.model.js';
 import Class from '../../shared/models/class.model.js';
@@ -65,14 +65,7 @@ async function getCurrentGrades(userId, active = true) {
         // Calculate weighted average grade
         let currentGrade = null;
         if (events.length) {
-          const { weightedSum, totalWeight } = events.reduce(
-            (acc, ev) => ({
-              weightedSum: acc.weightedSum + ev.grade * ev.weight,
-              totalWeight: acc.totalWeight + ev.weight,
-            }),
-            { weightedSum: 0, totalWeight: 0 }
-          );
-          if (totalWeight > 0) currentGrade = weightedSum / totalWeight;
+          currentGrade = weightedAverage(events);
         }
 
         // API response structure
