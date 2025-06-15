@@ -159,12 +159,16 @@ export default (router) => {
     const fromDate = req.query.from || null;
     const toDate = req.query.to || null;
 
+    // Added
+    const courseId = req.query.courseId || null;
+
     const { success, status, errors, events } = await getEvents(
       userId,
       isCompleted,
       expandCourse,
       fromDate,
-      toDate
+      toDate,
+      courseId
     );
 
     if (!success) {
