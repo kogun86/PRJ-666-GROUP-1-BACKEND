@@ -64,16 +64,17 @@ function getClassesFromSchedule(schedule, startDate, endDate) {
 }
 
 function weightedAverage(events){
-  const {weightedSum, totalWeight } = events.reduce(
+  const {weightedSum, totalWeightSoFar } = events.reduce(
     (acc, ev) => ({
       weightedSum: acc.weightedSum + ev.grade * ev.weight,
-      totalWeight: acc.totalWeight + ev.weight,
+      totalWeightSoFar: acc.totalWeightSoFar + ev.weight,
     }),
-    {weightedSum: 0, totalWeight: 0}
+    {weightedSum: 0, totalWeightSoFar: 0}
   );
   return{
-    avg: totalWeight > 0 ? weightedSum / totalWeight : null,
-    totalWeight,
+    avg: totalWeightSoFar > 0 ? weightedSum / totalWeightSoFar : null,
+    totalWeightSoFar,
+    weightRemaining: 100 - totalWeightSoFar,
   }
 }
 
