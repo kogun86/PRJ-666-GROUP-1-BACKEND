@@ -1,4 +1,4 @@
-import { getGoals } from '../goal.controller.js';
+import { getGoalReport, getGoals } from '../goal.controller.js';
 
 export default (router) => {
   /**
@@ -55,5 +55,18 @@ export default (router) => {
     }
 
     return res.status(200).json({ success: true, goals });
+  });
+
+  // Swagger Documentation for report endpoint
+
+  router.get('/:goalId/report', async (req, res) => {
+    const userId = req.user.userId;
+    const {success, status, errors, report} = await getGoalReport(userId, req.params.goalId);
+
+    if (!success) {
+      return res.status(status).json({ success: false, errors });
+    }
+
+    return res.status(200).json({ success: true, report });
   });
 };

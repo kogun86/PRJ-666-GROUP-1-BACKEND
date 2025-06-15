@@ -2,7 +2,9 @@ import logger from '../../shared/utils/logger.js';
 import validateGoal from './goal.validator.js';
 
 import Goal from '../../shared/models/goal.model.js';
-
+import Course from '../../shared/models/course.model.js';
+import Event from '../../shared/models/event.model.js';
+import { categorizePriority, weightedAverage } from '../../shared/lib/class.shared.js';
 // TODO: Delete inactive goals
 async function getGoals(
   userId,
@@ -107,4 +109,78 @@ async function createGoal(userId, data) {
   }
 }
 
-export { getGoals, updateGoal, createGoal, deleteGoal };
+async function getGoalReport(userId, goalId) {
+  logger.debug('Starting goal report retrieval process');
+  const goal = await Goal.findOne({ _id: goalId, userId });
+  
+  if(!goal){
+    logger.warn(`Goal with ID ${goalId} not found for user ${userId}`);
+    return { success: false, status: 404, errors: ['Goal not found'] };
+  }
+
+  const course = await Course.findById(goal.courseId);
+  if (!course) {
+    logger.warn(`Course with ID ${goal.courseId} not found for user ${userId}`);
+    return { success: false, status: 404, errors: ['Course not found'] };
+  }
+
+  const events = await Event.find({courseID: course._id, userId}).lean();
+
+  const past = events.filter(e => e.grade !== null);
+  const future = events.filter(e => e.grade === null);
+
+  const {avg: currentGrade, totalWeight: pastWeight} = weightedAverage(past);
+  // Determine if past events met the target grade
+  const pastCategories = past.map(e => ({
+    ...e,
+    contribution: e.grade >= goal.targetGrade ? 'positive' : 'negative',
+  }));
+  const upcoming = future.map(e => ({
+    ...e,
+    importance: categorizePriority(e.weight),
+  }));
+    
+  // Calculating Weight
+  const remainingWeight = future.reduce((sum, e) => sum + e.weight, 0);   // weight of tasks already in DB
+  const totalWeightSoFar = pastWeight + remainingWeight;
+  const missingWeight = Math.max(0, 100 - totalWeightSoFar);             // room left to reach 100%
+  const futureWeightAdjusted = remainingWeight + missingWeight;          // assume missing work exists
+
+  let requiredAvgForRemaining = null;
+  let achievable = true;
+
+  if (futureWeightAdjusted > 0) {
+    requiredAvgForRemaining =
+      (goal.targetGrade * 100 - currentGrade * pastWeight) / futureWeightAdjusted;
+
+    achievable = requiredAvgForRemaining <= 100;
+  } else {
+    // No remaining weight to achieve the goal, Achievable only if the current grade is already at or above the target. 
+    achievable = currentGrade >= goal.targetGrade;
+  }
+
+    logger.warn(`Total Weight: ${pastWeight + remainingWeight}`);
+
+  const recommendation = achievable? 'ON_TRACK' : 'CONSIDER_ADJUSTING_GOAL';
+
+  return {
+    success: true, 
+    report: {
+      goalId: goal._id,
+      course: {
+        _id: course._id,
+        code: course.code,
+        title: course.title,
+      },
+      targetGrade: goal.targetGrade,
+      currentGrade,
+      pastEvents: pastCategories,
+      upcomingTasks: upcoming, achievable,
+      requiredAvgForRemaining,
+      recommendation,
+    },
+  };
+}
+
+
+export { getGoals, getGoalReport, updateGoal, createGoal, deleteGoal };
