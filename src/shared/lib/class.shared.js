@@ -63,4 +63,26 @@ function getClassesFromSchedule(schedule, startDate, endDate) {
   return classes;
 }
 
-export { createClassesInPeriod };
+function weightedAverage(events){
+  const {weightedSum, totalWeightSoFar } = events.reduce(
+    (acc, ev) => ({
+      weightedSum: acc.weightedSum + ev.grade * ev.weight,
+      totalWeightSoFar: acc.totalWeightSoFar + ev.weight,
+    }),
+    {weightedSum: 0, totalWeightSoFar: 0}
+  );
+  return{
+    avg: totalWeightSoFar > 0 ? weightedSum / totalWeightSoFar : null,
+    totalWeightSoFar,
+    weightRemaining: 100 - totalWeightSoFar,
+  }
+}
+
+function categorizePriority(weight){
+  if(weight >= 20) return 'high';
+  if(weight >= 10) return 'medium';
+  return 'low';
+}
+
+
+export { createClassesInPeriod, weightedAverage, categorizePriority };

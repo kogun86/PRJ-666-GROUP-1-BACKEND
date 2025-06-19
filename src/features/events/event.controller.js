@@ -9,10 +9,10 @@ async function getEvents(
   isCompleted = false,
   expandCourse = false,
   fromDate = null,
-  toDate = null
+  toDate = null,
 ) {
   logger.debug(
-    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}, fromDate=${fromDate}, toDate=${toDate}`
+    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}, fromDate=${fromDate}, toDate=${toDate}`,
   );
 
   try {

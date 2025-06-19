@@ -44,6 +44,13 @@ export default (router) => {
    *       format: date-time
    *      example: 2023-09-01T00:00:00Z
    *    - in: query
+   *      name: courseId
+   *      description: Only return events for this course (Mongo ObjectId)
+   *      schema:
+   *       type: string
+   *       pattern: '^[0-9a-fA-F]{24}$'
+   *      example: 60c72b2f9b1e8d001c8e4f3b
+   *    - in: query
    *      name: to
    *      description: Filter events that start or end before this date (ISO format)
    *      required: false

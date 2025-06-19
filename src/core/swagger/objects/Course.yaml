@@ -57,6 +57,23 @@ components:
           type: string
           description: Course end calendar date
           format: date
+        currentGrade:
+          type: object
+          description: Weighted average grade and metrics for this course
+          properties:
+            avg:
+              type: number
+              format: float
+              description: Current weighted average grade
+              example: 42
+            totalWeightSoFar:
+              type: number
+              description: Combined weight of graded tasks
+              example: 10
+            weightRemaining:
+              type: number
+              description: Total weight of remaining ungraded tasks
+              example: 90
         instructor:
           type: object
           description: Contains information about the course instructor

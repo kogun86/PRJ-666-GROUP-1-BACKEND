@@ -1,6 +1,6 @@
 import validateCourse from './course.validator.js';
 import logger from '../../shared/utils/logger.js';
-import { createClassesInPeriod } from '../../shared/lib/class.shared.js';
+import { createClassesInPeriod, weightedAverage } from '../../shared/lib/class.shared.js';
 
 import Course from '../../shared/models/course.model.js';
 import Class from '../../shared/models/class.model.js';
@@ -40,7 +40,42 @@ async function getCourses(userId, active = true) {
 
     logger.info(`Fetched ${courses.length} courses for user ${userId}`);
     logger.debug({ courses }, 'Courses fetched from database');
-    return { success: true, courses };
+
+    // Fetching Grades for each course
+    logger.debug(`Fetching current grades for user ${userId} with active status: ${active}`);
+    // Fetching all grades for the current courses
+    await Promise.all(
+      courses.map(async (course, index) => {
+        const events = await Event.find({
+          userId,
+          courseID: course._id,
+          grade:  { $ne: null },
+          weight: { $ne: null },
+        });
+
+        // Calculate weighted average grade
+        const gradeObj = events.length ? weightedAverage(events) : null;
+        const courseObj = course.toObject();
+        const ordered = {
+          instructor: course.instructor,
+          _id:        course._id,
+          userId:     course.userId,
+          title:      course.title,
+          code:       course.code,
+          section:    course.section,
+          color:      course.color,
+          status:     course.status,
+          startDate:  course.startDate,
+          endDate:    course.endDate,
+          // insert currentGrade right here
+          currentGrade: gradeObj,
+          schedule:   course.schedule,
+          __v:        course.__v
+        }
+        courses[index] = ordered;
+      })
+    );
+    return { success: true, courses};
   } catch (err) {
     logger.error({ err }, 'Error fetching courses from database');
     return { success: false, status: 500, errors: ['Internal server error'] };

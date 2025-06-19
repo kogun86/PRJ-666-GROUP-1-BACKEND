@@ -8,7 +8,7 @@ export default (router) => {
    *   tags:
    *    - Courses
    *   summary: Get courses for the authenticated user
-   *   description: Retrieve all courses for the authenticated user, filtered by their completion status
+   *   description: Retrieve all courses for the authenticated user, filtered by their completion status. Each course includes its current grade, if available.
    *   security:
    *    - BearerAuth: []
    *   parameters:
@@ -58,4 +58,4 @@ export default (router) => {
 
     return res.status(200).json({ success: true, courses });
   });
-};
+}

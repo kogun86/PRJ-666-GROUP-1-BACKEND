@@ -1,0 +1,75 @@
+components:
+  schemas:
+    GoalReport:
+      type: object
+      required:
+        - goalId
+        - course
+        - targetGrade
+        - currentGrade
+        - pastEvents
+        - upcomingTasks
+        - achievable
+        - recommendation
+      properties:
+        goalId:
+          type: string
+          description: ID of the goal (MongoDB ObjectId)
+          pattern: '^[0-9a-fA-F]{24}$'
+          example: "684e5807de51ac578ff5e348"
+        course:
+          $ref: '#/components/schemas/Course'
+        targetGrade:
+          type: number
+          format: float
+          description: User’s target grade for the course
+          example: 90
+        currentGrade:
+          type: object
+          nullable: true
+          description: >
+            Object containing the current grade details for the course.
+            May be null if no graded events exist yet.
+          properties:
+            avg:
+              type: number
+              format: float
+              nullable: true
+              description: The current average of the calculated weight in the course.
+              example: 78.5
+            totalWeightSoFar:
+              type: number
+              format: float
+              description: The weight currently allocated (sum of all graded event weights).
+              example: 60
+            weightRemaining:
+              type: number
+              format: float
+              description: The weight remaining for the current course (100 - totalWeightSoFar).
+              example: 40
+        pastEvents:
+          type: array
+          description: Graded tasks completed in the course
+          items:
+            $ref: '#/components/schemas/Event'
+        upcomingTasks:
+          type: array
+          description: Upcoming tasks that could affect the final grade
+          items:
+            $ref: '#/components/schemas/Event'
+        achievable:
+          type: boolean
+          description: Whether the target grade is still achievable
+          example: false
+        requiredAvgForRemaining:
+          type: number
+          format: float
+          nullable: true
+          description: >
+            Average grade required on remaining tasks to meet the target grade.
+            Null if no more weighted tasks remain or data is insufficient.
+          example: null
+        recommendation:
+          type: string
+          description: AI-generated recommendation based on current performance
+          example: "CONSIDER_ADJUSTING_GOAL"
