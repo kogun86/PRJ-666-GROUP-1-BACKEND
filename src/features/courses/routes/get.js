@@ -1,4 +1,4 @@
-import { getCourses, getCurrentGrades } from '../course.controller.js';
+import { getCourses } from '../course.controller.js';
 
 export default (router) => {
   /**
@@ -8,7 +8,7 @@ export default (router) => {
    *   tags:
    *    - Courses
    *   summary: Get courses for the authenticated user
-   *   description: Retrieve all courses for the authenticated user, filtered by their completion status
+   *   description: Retrieve all courses for the authenticated user, filtered by their completion status. Each course includes its current grade, if available.
    *   security:
    *    - BearerAuth: []
    *   parameters:
@@ -58,93 +58,4 @@ export default (router) => {
 
     return res.status(200).json({ success: true, courses });
   });
-
-/**
- * @swagger
- * /courses/grades:
- *   get:
- *     tags:
- *       - Courses
- *     summary: Get current weighted grade for each active course
- *     description: >
- *       Returns a list of all **active** courses for the authenticated user,
- *       each with the user's current weighted grade calculated from completed
- *       tasks. Courses with no graded tasks yet will have `currentGrade = null`.
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       '200':
- *         description: Successfully retrieved active courses with grades
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required:
- *                 - success
- *                 - courses
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the request was successful
- *                   default: true
- *                 courses:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                         description: Course ID
- *                       code:
- *                         type: string
- *                         description: Course code
- *                       title:
- *                         type: string
- *                         description: Course title
- *                       currentGrade:
- *                         type: object
- *                         nullable: true
- *                         description: >
- *                           Object containing the current grade details for the course.
- *                           May be null if no graded tasks exist yet.
- *                         properties:
- *                           avg:
- *                             type: number
- *                             format: float
- *                             nullable: true
- *                             description: The current average of the calculated weight in the course.
- *                             example: 78.5
- *                           totalWeightSoFar:
- *                             type: number
- *                             format: float
- *                             description: The weight currently allocated (sum of all graded event weights).
- *                             example: 60
- *                           weightRemaining:
- *                             type: number
- *                             format: float
- *                             description: The weight remaining for the current course (100 - totalWeightSoFar).
- *                             example: 40
- *       '401':
- *         $ref: '#/components/responses/Unauthorized'
- *       '500':
- *         $ref: '#/components/responses/InternalServerError'
- */
-
-  router.get('/grades', async (req, res) => {
-    const userId = req.user.userId;
-    const { active } = req.query;
-    
-    const { success, status, errors, courses } = await getCurrentGrades(
-      userId,
-      active ? JSON.parse(active) : undefined
-    );
-
-    if (!success) {
-      return res.status(status).json({ success: false, errors });
-    }
-
-    return res.status(200).json({ success: true, courses });
-
-  });
-
 }

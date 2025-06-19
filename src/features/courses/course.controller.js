@@ -40,21 +40,12 @@ async function getCourses(userId, active = true) {
 
     logger.info(`Fetched ${courses.length} courses for user ${userId}`);
     logger.debug({ courses }, 'Courses fetched from database');
-    return { success: true, courses };
-  } catch (err) {
-    logger.error({ err }, 'Error fetching courses from database');
-    return { success: false, status: 500, errors: ['Internal server error'] };
-  }
-}
 
-async function getCurrentGrades(userId, active = true) {
-  logger.debug(`Fetching current grades for user ${userId} with active status: ${active}`);
-  try {
-    // Fetch active courses only
-    const courses = await Course.find({userId, status: active ? 'active' : 'inactive'});
+    // Fetching Grades for each course
+    logger.debug(`Fetching current grades for user ${userId} with active status: ${active}`);
     // Fetching all grades for the current courses
-    const coursesWithGrades = await Promise.all(
-      courses.map(async (course) => {
+    await Promise.all(
+      courses.map(async (course, index) => {
         const events = await Event.find({
           userId,
           courseID: course._id,
@@ -63,25 +54,31 @@ async function getCurrentGrades(userId, active = true) {
         });
 
         // Calculate weighted average grade
-        let currentGrade = null;
-        if (events.length) {
-          currentGrade = weightedAverage(events);
+        const gradeObj = events.length ? weightedAverage(events) : null;
+        const courseObj = course.toObject();
+        const ordered = {
+          instructor: course.instructor,
+          _id:        course._id,
+          userId:     course.userId,
+          title:      course.title,
+          code:       course.code,
+          section:    course.section,
+          color:      course.color,
+          status:     course.status,
+          startDate:  course.startDate,
+          endDate:    course.endDate,
+          // insert currentGrade right here
+          currentGrade: gradeObj,
+          schedule:   course.schedule,
+          __v:        course.__v
         }
-
-        // API response structure
-        return {
-          _id:   course._id,
-          code:  course.code,
-          title: course.title,
-          currentGrade,
-        };
+        courses[index] = ordered;
       })
     );
-
-    return ({ success: true, courses: coursesWithGrades });
+    return { success: true, courses};
   } catch (err) {
-    logger.error(err);
-    return ({ success: false, status: 500, errors: ['Internal server error'] });
+    logger.error({ err }, 'Error fetching courses from database');
+    return { success: false, status: 500, errors: ['Internal server error'] };
   }
 }
 
@@ -213,4 +210,4 @@ async function deleteCourse(courseId, userId) {
   }
 }
 
-export { getCourses, getCurrentGrades, createCourse, updateCourse, deleteCourse };
+export { getCourses, createCourse, updateCourse, deleteCourse };
