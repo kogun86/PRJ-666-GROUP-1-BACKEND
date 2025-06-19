@@ -1,7 +1,7 @@
 import logger from '../utils/logger.js';
 
 import Class from '../models/class.model.js';
-
+import Event from '../models/event.model.js';
 async function createClassesInPeriod(userId, courseId, schedule, startDate, endDate) {
   try {
     logger.debug('Starting class creation process');
@@ -63,6 +63,41 @@ function getClassesFromSchedule(schedule, startDate, endDate) {
   return classes;
 }
 
+async function getCoursesWithGrades(courses, userId) {
+  await Promise.all(
+        courses.map(async (course, index) => {
+          const events = await Event.find({
+            userId,
+            courseID: course._id,
+            grade:  { $ne: null },
+            weight: { $ne: null },
+          });
+  
+          // Calculate weighted average grade
+          const gradeObj = events.length ? weightedAverage(events) : null;
+
+          const ordered = {
+            instructor: course.instructor,
+            _id:        course._id,
+            userId:     course.userId,
+            title:      course.title,
+            code:       course.code,
+            section:    course.section,
+            color:      course.color,
+            status:     course.status,
+            startDate:  course.startDate,
+            endDate:    course.endDate,
+            // insert currentGrade right here
+            currentGrade: gradeObj,
+            schedule:   course.schedule,
+            __v:        course.__v
+          }
+          courses[index] = ordered;
+        })
+      );
+      return courses;
+}
+
 function weightedAverage(events){
   const {weightedSum, totalWeightSoFar } = events.reduce(
     (acc, ev) => ({
@@ -85,4 +120,4 @@ function categorizePriority(weight){
 }
 
 
-export { createClassesInPeriod, weightedAverage, categorizePriority };
+export { createClassesInPeriod, weightedAverage, categorizePriority, getCoursesWithGrades };
