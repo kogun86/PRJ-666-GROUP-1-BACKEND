@@ -10,10 +10,9 @@ async function getEvents(
   expandCourse = false,
   fromDate = null,
   toDate = null,
-  courseId,
 ) {
   logger.debug(
-    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}, fromDate=${fromDate}, toDate=${toDate}, courseId=${courseId}`,
+    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}, fromDate=${fromDate}, toDate=${toDate}`,
   );
 
   try {
@@ -59,11 +58,6 @@ async function getEvents(
         // If we only have fromDate constraints
         query.$or = dateQuery.$or;
       }
-    }
-
-    // If course ID is provided, add it to the query
-    if(courseId){
-      query.courseID = courseId;
     }
 
     logger.debug({ query }, 'Database query for events');
