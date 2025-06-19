@@ -4,7 +4,7 @@ import validateGoal from './goal.validator.js';
 import Goal from '../../shared/models/goal.model.js';
 import Course from '../../shared/models/course.model.js';
 import Event from '../../shared/models/event.model.js';
-import { categorizePriority, weightedAverage } from '../../shared/lib/class.shared.js';
+import { categorizePriority, getCoursesWithGrades, weightedAverage } from '../../shared/lib/class.shared.js';
 // TODO: Delete inactive goals
 async function getGoals(
   userId,
@@ -24,14 +24,20 @@ async function getGoals(
 
     const goals = await query.lean().exec();
 
+    await Promise.all(goals.map(async (goal) => {
+
     // If expandCourse is true, map the courseId to course
-    if (options.expandCourse) {
-      goals.map((goal) => {
-        goal.course = goal.courseId;
-        delete goal.courseId;
-        return goal;
-      });
-    }
+    const courseDoc = await Course.findById(goal.courseId).lean();
+        if (courseDoc) {
+          const [courseWithGrade] = await getCoursesWithGrades(
+            [courseDoc],
+            userId
+          );
+          goal.course = courseWithGrade;   // full course + its own currentGrade
+        }
+
+      })
+    );
 
     logger.info({ goals }, 'Goals retrieved successfully');
 
