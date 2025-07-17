@@ -155,11 +155,6 @@ async function getGoalReport(userId, goalId) {
   let requiredAvgForRemaining = null;
   let achievable = true;
 
-  if(totalWeightSoFar > 100) {
-    logger.warn(`Total weight exceeds 100%: ${totalWeightSoFar}`);
-    return { success: false, status: 400, errors: ['Total weight exceeds 100%'] };
-  }
-
   if (futureWeightAdjusted > 0) {
     requiredAvgForRemaining =
       (goal.targetGrade * 100 - currentGrade * pastWeight) / futureWeightAdjusted;
