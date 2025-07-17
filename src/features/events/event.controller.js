@@ -1,6 +1,8 @@
 import validateEvent from './event.validator.js';
 import logger from '../../shared/utils/logger.js';
 
+import { updateProcrastinationIndex, gradeStabilityIndex, completionEfficiencyIndex } from '../users/user.controller.js';
+
 import Event from '../../shared/models/event.model.js';
 import Course from '../../shared/models/course.model.js';
 
@@ -121,6 +123,12 @@ async function updateCompletionStatus(eventId, userId, isCompleted) {
     logger.info(`Event ${eventId} completion status updated to ${isCompleted}`);
     logger.debug({ updatedEvent }, 'Updated event details');
 
+    // Update user indices based on the new completion status
+    if (updatedEvent.type != 'exam' && updatedEvent.type != 'test' && updatedEvent.type != 'quiz') {
+      await updateProcrastinationIndex(userId, updatedEvent.end);
+    }
+    await completionEfficiencyIndex(userId, updatedEvent.grade);
+
     return { success: true, event: updatedEvent };
   } catch (error) {
     logger.error({ error }, `Error updating completion status for event ${eventId}: `);
@@ -148,6 +156,8 @@ async function updateGrade(eventId, userId, grade) {
 
     logger.info(`Event ${eventId} grade updated to ${grade}`);
     logger.debug({ updatedEvent }, 'Updated event details');
+
+    await gradeStabilityIndex(userId, updatedEvent.grade);
 
     return { success: true, event: updatedEvent };
   } catch (error) {
