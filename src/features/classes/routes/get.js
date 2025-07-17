@@ -12,12 +12,18 @@ import { getClasses } from '../class.controller.js';
  *
  *     ### Example API calls:
  *     - Get all classes: `GET /api/v1/classes`
+ *     - Get past classes: `GET /api/v1/classes?past=true`
  *     - Expand course details: `GET /api/v1/classes?expand=course`
  *     - Filter by date range: `GET /api/v1/classes?from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
  *     - Combine expansion with date filtering: `GET /api/v1/classes?expand=course&from=2023-09-01T00:00:00Z&to=2023-12-31T23:59:59Z`
  *   security:
  *    - BearerAuth: []
  *   parameters:
+ *    - in: query
+ *      name: past
+ *      schema:
+ *       type: boolean
+ *      description: Optional parameter to get past classes (classes that have ended)
  *    - in: query
  *      name: from
  *      schema:
@@ -134,6 +140,7 @@ export default (router) => {
       from: req.query.from,
       to: req.query.to,
       expand: req.query.expand,
+      past: req.query.past,
     };
 
     const { success, status, errors, classes } = await getClasses(userId, options);

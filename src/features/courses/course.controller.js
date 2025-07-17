@@ -6,35 +6,43 @@ import Course from '../../shared/models/course.model.js';
 import Class from '../../shared/models/class.model.js';
 import Event from '../../shared/models/event.model.js';
 
-async function getCourses(userId, active = true) {
-  logger.info(`Fetching courses for user ${userId} with active status: ${active}`);
+// FIXED getCourses function
+async function getCourses(userId, active = true, past = false) {
+  logger.info(`Fetching courses for user ${userId} with active status: ${active}, past: ${past}`);
 
   try {
-    let courses = await Course.find({ userId, status: active ? 'active' : 'inactive' });
+    let courses;
+    const today = new Date();
 
-    if (active == true) {
-      const today = new Date();
-      const courseIdsToUpdate = [];
+    if (past) {
+      // For archived courses, get ALL courses and filter by end date
+      courses = await Course.find({ userId });
+      courses = courses.filter((course) => course.endDate < today);
+      logger.info(`Filtered to ${courses.length} past courses for user ${userId}`);
+    } else {
+      // For active/inactive courses, use the original logic
+      courses = await Course.find({ userId, status: active ? 'active' : 'inactive' });
 
-      logger.info(`Checking ${courses.length} active courses for end dates`);
-      courses = courses.filter((course) => {
-        logger.debug(`Checking if course ${course._id} is still active`);
+      if (active == true) {
+        const courseIdsToUpdate = [];
+        logger.info(`Checking ${courses.length} active courses for end dates`);
+        courses = courses.filter((course) => {
+          logger.debug(`Checking if course ${course._id} is still active`);
+          if (course.endDate < today) {
+            courseIdsToUpdate.push(course._id);
+            logger.debug(`Course ${course._id} marked as inactive due to end date`);
+            return false;
+          }
+          return true;
+        });
 
-        if (course.endDate < today) {
-          courseIdsToUpdate.push(course._id);
-          logger.debug(`Course ${course._id} marked as inactive due to end date`);
-          return false;
+        try {
+          await Course.updateMany({ _id: { $in: courseIdsToUpdate } }, { status: 'inactive' });
+          logger.info(`Updated ${courseIdsToUpdate.length} courses to inactive status`);
+        } catch (err) {
+          logger.error({ err }, 'Error updating courses to inactive status');
+          return { success: false, status: 500, errors: ['Internal server error'] };
         }
-
-        return true;
-      });
-
-      try {
-        await Course.updateMany({ _id: { $in: courseIdsToUpdate } }, { status: 'inactive' });
-        logger.info(`Updated ${courseIdsToUpdate.length} courses to inactive status`);
-      } catch (err) {
-        logger.error({ err }, 'Error updating courses to inactive status');
-        return { success: false, status: 500, errors: ['Internal server error'] };
       }
     }
 
@@ -45,7 +53,7 @@ async function getCourses(userId, active = true) {
     logger.debug(`Fetching current grades for user ${userId} with active status: ${active}`);
     // Fetching all grades for the current courses
     courses = await getCoursesWithGrades(courses, userId);
-    return { success: true, courses};
+    return { success: true, courses };
   } catch (err) {
     logger.error({ err }, 'Error fetching courses from database');
     return { success: false, status: 500, errors: ['Internal server error'] };
