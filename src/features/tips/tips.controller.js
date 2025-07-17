@@ -4,6 +4,7 @@ import logger from '../../shared/utils/logger.js';
 
 import Event from '../../shared/models/event.model.js';
 import Course from '../../shared/models/course.model.js';
+import User from '../../shared/models/user.model.js';
 
 /**
  * Get personalized study tips based on user's events
@@ -71,8 +72,12 @@ async function getStudyTips(userId, options = {}) {
       }
     }
 
+    const { habits } = await User.findById(userId, 'habits');
+    logger.debug({ habits }, `Fetched habits for user ${userId}`);
+
     // Create prompt for AI
-    const prompt = createTipsPrompt(eventsWithCourses, options);
+    const prompt = createTipsPrompt(eventsWithCourses, habits, options);
+    logger.debug({ prompt }, 'Generated prompt for AI:');
 
     // Get tips from OpenRouter API
     const tips = await getAITips(prompt);
@@ -90,7 +95,7 @@ async function getStudyTips(userId, options = {}) {
  * @param {Object} options - User preferences
  * @returns {String} - Formatted prompt for AI
  */
-function createTipsPrompt(events, options) {
+function createTipsPrompt(events, habits, options) {
   const { timeAvailable, studyStyle } = options;
 
   // Format upcoming events
@@ -131,7 +136,16 @@ ${upcomingEvents || 'No upcoming events'}
 RECENTLY COMPLETED ASSIGNMENTS/TESTS:
 ${completedEvents || 'No completed events'}
 
-Based on the student's upcoming deadlines, completed work, available study time, and preferred study style, provide personalized study tips and a suggested study schedule. Include specific strategies for prioritizing tasks, managing time effectively, and preparing for upcoming assessments. Keep your response concise, practical, and tailored to the student's specific situation.`;
+SRUDENT STUDY HABITS:\n
+These indices reflect the student's learning behavior patterns:\n
+- Procrastination Index: ${habits.procrastinationIndex || 'Not specified'} (0-100 scale, lower is better, 0 = no procrastination, 100 = extreme procrastination)\n
+- Consistency Index: ${habits.consistencyIndex || 'Not specified'} (0-100; higher is better. 0 = cramming, 100 = evenly spaced study sessions)\n
+- Grade Stability Index: ${habits.gradeStabilityIndex || 'Not specified'} (0-100; higher is better. 0 = grades vary greatly, 100 = grades are consistent)\n
+- Completion Efficiency Index: ${habits.completionEfficiencyIndex || 'Not specified'} (0-100; higher is better. 0 = many assignments incomplete, 100 = all assignments completed)\n
+Use these indicators to guide your recommendations, but do not refer to the actual index values or mention the names of the indexes directly in your response.\n
+For example, it's okay to say \"It seems like you tend to procrastinate”, but not “Your procrastination index is high.\"\n\n
+
+Based on the student's upcoming deadlines, completed work, available study time, student study individual habits, and preferred study style, provide personalized study tips and a suggested study schedule. Include specific strategies for prioritizing tasks, managing time effectively, and preparing for upcoming assessments. Keep your response concise, practical, and tailored to the student's specific situation.`;
 }
 
 /**

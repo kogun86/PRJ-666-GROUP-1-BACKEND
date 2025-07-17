@@ -12,8 +12,12 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   habits: {
-    type: [],
-    default: [],
+    type: {
+      procrastinationIndex: { type: Number, default: 0 }, // 0-100 scale, lower is better
+      consistencyIndex: { type: Number, default: 100 }, // 0-100; higher is better
+      gradeStabilityIndex: { type: Number, default: 100 }, // 0-100; higher is better
+      completionEfficiencyIndex: { type: Number, default: 100 }, // 0-100; higher is better
+    },
   },
 });
 
