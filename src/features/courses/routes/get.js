@@ -8,7 +8,13 @@ export default (router) => {
    *   tags:
    *    - Courses
    *   summary: Get courses for the authenticated user
-   *   description: Retrieve all courses for the authenticated user, filtered by their completion status. Each course includes its current grade, if available.
+   *   description: |
+   *     Retrieve all courses for the authenticated user, filtered by their completion status. Each course includes its current grade, if available.
+   *
+   *     ### Example API calls:
+   *     - Get active courses: `GET /api/v1/courses`
+   *     - Get completed courses: `GET /api/v1/courses?active=false`
+   *     - Get past courses: `GET /api/v1/courses?past=true`
    *   security:
    *    - BearerAuth: []
    *   parameters:
@@ -18,6 +24,12 @@ export default (router) => {
    *      schema:
    *       type: boolean
    *       default: true
+   *    - in: query
+   *      name: past
+   *      description: Filter courses that have ended (endDate < current date)
+   *      schema:
+   *       type: boolean
+   *       default: false
    *   responses:
    *    '200':
    *      description: Successfully retrieved courses
@@ -45,11 +57,12 @@ export default (router) => {
    */
   router.get('/', async (req, res) => {
     const userId = req.user.userId;
-    const { active } = req.query;
+    const { active, past } = req.query;
 
     const { success, status, errors, courses } = await getCourses(
       userId,
-      active ? JSON.parse(active) : undefined
+      active ? JSON.parse(active) : undefined,
+      past ? JSON.parse(past) : false
     );
 
     if (!success) {
@@ -58,4 +71,4 @@ export default (router) => {
 
     return res.status(200).json({ success: true, courses });
   });
-}
+};

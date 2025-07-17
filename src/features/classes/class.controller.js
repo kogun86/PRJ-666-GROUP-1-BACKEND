@@ -21,10 +21,18 @@ async function getClasses(userId, options = {}) {
     }
 
     // Build query
-    const query = {
+    let query = {
       userId,
-      startTime: { $gte: startDate, $lte: endDate },
     };
+
+    // Handle past parameter
+    if (options.past === 'true') {
+      // For past classes, get classes that have ended (endTime < current date)
+      query.endTime = { $lt: today };
+    } else {
+      // For current/future classes, use the date range filter
+      query.startTime = { $gte: startDate, $lte: endDate };
+    }
 
     // Execute query
     let classQuery = Class.find(query);
