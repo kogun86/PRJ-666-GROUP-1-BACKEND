@@ -141,6 +141,9 @@ export default (router) => {
       to: req.query.to,
       expand: req.query.expand,
       past: req.query.past,
+      courseId: req.query.courseId,
+      room: req.query.room,
+      professor: req.query.professor,
     };
 
     const { success, status, errors, classes } = await getClasses(userId, options);
