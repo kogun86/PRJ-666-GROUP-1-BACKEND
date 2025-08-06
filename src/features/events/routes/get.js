@@ -161,6 +161,8 @@ export default (router) => {
    */
   router.get('/', async (req, res) => {
     const userId = req.user.userId;
+    const courseID = req.query.courseID || null;
+    const type = req.query.type || null;
     const isCompleted = req.query.completed === 'true';
     const expandCourse = req.query.expand === 'course';
     const fromDate = req.query.from || null;
@@ -168,6 +170,8 @@ export default (router) => {
 
     const { success, status, errors, events } = await getEvents(
       userId,
+      courseID,
+      type,
       isCompleted,
       expandCourse,
       fromDate,
@@ -335,6 +339,8 @@ export default (router) => {
    */
   router.get('/:status', async (req, res) => {
     const userId = req.user.userId;
+    const courseID = req.query.courseID || null;
+    const type = req.query.type || null;
     const eventStatus = req.params.status;
     const expandCourse = req.query.expand === 'course';
     const fromDate = req.query.from || null;
@@ -342,6 +348,8 @@ export default (router) => {
 
     const { success, status, errors, events } = await getEvents(
       userId,
+      courseID,
+      type,
       eventStatus === 'completed',
       expandCourse,
       fromDate,
