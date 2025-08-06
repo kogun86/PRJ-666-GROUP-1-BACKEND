@@ -8,18 +8,34 @@ import Course from '../../shared/models/course.model.js';
 
 async function getEvents(
   userId,
+  courseID = null,
+  type = null,
   isCompleted = false,
   expandCourse = false,
   fromDate = null,
   toDate = null,
 ) {
   logger.debug(
-    `Fetching events for user ${userId} with isCompleted=${isCompleted}, expandCourse=${expandCourse}, fromDate=${fromDate}, toDate=${toDate}`,
+    `Fetching events for user ${userId} 
+    with courseID=${courseID}, 
+    type=${type},
+    isCompleted=${isCompleted}, 
+    expandCourse=${expandCourse}, 
+    fromDate=${fromDate}, 
+    toDate=${toDate}`,
   );
 
   try {
     // Build the query with required filters
     const query = { userId, isCompleted };
+
+    if (courseID) {
+      query.courseID = courseID;
+    }
+
+    if (type) {
+      query.type = type;
+    }
 
     // Add date range filter if provided
     if (fromDate || toDate) {
